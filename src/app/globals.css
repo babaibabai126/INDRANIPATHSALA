@@ -1,0 +1,181 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-bengali: var(--font-bengali);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  /* Indrani Pathsala — Premium Dark Navy + Electric Blue (matches College Vidya reference) */
+  --radius: 0.75rem;
+
+  /* Base background — deep navy */
+  --background: #02081b;
+  --foreground: #e6edf6;
+
+  /* Card / elevated surfaces */
+  --card: #0e1730;
+  --card-foreground: #e6edf6;
+  --popover: #0e1730;
+  --popover-foreground: #e6edf6;
+
+  /* Primary — electric blue (CTA) */
+  --primary: #0056d2;
+  --primary-foreground: #ffffff;
+
+  /* Secondary — muted navy */
+  --secondary: #1a233a;
+  --secondary-foreground: #e6edf6;
+
+  /* Muted */
+  --muted: #131c34;
+  --muted-foreground: #94a3b8;
+
+  /* Accent — gold */
+  --accent: #facc15;
+  --accent-foreground: #1a1a1a;
+
+  --destructive: #ef4444;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: #0056d2;
+
+  /* Card accent borders */
+  --accent-orange: #f97316;
+  --accent-yellow: #facc15;
+  --accent-blue: #3b82f6;
+  --accent-purple: #a855f7;
+  --accent-teal: #2dd4bf;
+  --accent-red: #ef4444;
+
+  --chart-1: #f97316;
+  --chart-2: #facc15;
+  --chart-3: #3b82f6;
+  --chart-4: #a855f7;
+  --chart-5: #2dd4bf;
+
+  --sidebar: #0e1730;
+  --sidebar-foreground: #e6edf6;
+  --sidebar-primary: #0056d2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1a233a;
+  --sidebar-accent-foreground: #e6edf6;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #0056d2;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(0, 86, 210, 0.12) 0%, transparent 35%),
+      radial-gradient(circle at 85% 60%, rgba(168, 85, 247, 0.08) 0%, transparent 35%);
+    background-attachment: fixed;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #02081b;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a233a;
+  border-radius: 6px;
+  border: 2px solid #02081b;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0056d2;
+}
+
+/* Bengali text helper */
+.bn {
+  font-family: var(--font-bengali), var(--font-sans), sans-serif;
+}
+
+/* Subtle grid pattern */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Glow ring for CTAs */
+.glow-blue {
+  box-shadow: 0 0 0 0 rgba(0, 86, 210, 0.45);
+  animation: pulse-blue 2.4s ease-in-out infinite;
+}
+@keyframes pulse-blue {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 86, 210, 0.55), 0 10px 30px -8px rgba(0, 86, 210, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(0, 86, 210, 0), 0 14px 40px -8px rgba(0, 86, 210, 0.6);
+  }
+}
+
+/* Marquee for alert bar */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 24s linear infinite;
+}
+
+/* Slide up entrance */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out both;
+}
