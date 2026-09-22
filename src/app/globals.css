@@ -97,6 +97,15 @@
 
   --glow-1: rgba(0, 86, 210, 0.18);
   --glow-2: rgba(168, 85, 247, 0.14);
+
+  /* Elevated surface: solid light card on dark background
+     for maximum Bengali text readability in dark mode. */
+  --surface-elevated: #ffffff;
+  --surface-elevated-foreground: #0a1124;
+  --surface-elevated-muted: #eef2fa;
+  --surface-elevated-accent: #0056d2;
+  --surface-elevated-muted-foreground: #5b6478;
+  --surface-elevated-border: rgba(12, 21, 48, 0.10);
 }
 
 /* LIGHT theme */
@@ -152,6 +161,15 @@
 
   --glow-1: rgba(0, 86, 210, 0.10);
   --glow-2: rgba(147, 51, 234, 0.07);
+
+  /* Elevated surface: solid white card on light background
+     for maximum Bengali text readability in light mode. */
+  --surface-elevated: #ffffff;
+  --surface-elevated-foreground: #0a1124;
+  --surface-elevated-muted: #eef2fa;
+  --surface-elevated-accent: #0056d2;
+  --surface-elevated-muted-foreground: #5b6478;
+  --surface-elevated-border: rgba(12, 21, 48, 0.10);
 }
 
 @layer base {
