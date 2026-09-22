@@ -17,7 +17,6 @@ export function AlertBar() {
     };
   }, []);
 
-  // Next batch closes on 30 Sept 2026 23:59 IST
   const target = new Date("2026-09-30T23:59:00+05:30").getTime();
   const diff = Math.max(0, target - now.getTime());
   const days = Math.floor(diff / 86400000);

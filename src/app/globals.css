@@ -43,33 +43,28 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-:root {
-  /* Indrani Pathsala — Premium Dark Navy + Electric Blue (matches College Vidya reference) */
+/* DARK theme — Indrani Pathsala premium navy */
+:root,
+.dark {
   --radius: 0.75rem;
 
-  /* Base background — deep navy */
   --background: #02081b;
   --foreground: #e6edf6;
 
-  /* Card / elevated surfaces */
   --card: #0e1730;
   --card-foreground: #e6edf6;
   --popover: #0e1730;
   --popover-foreground: #e6edf6;
 
-  /* Primary — electric blue (CTA) */
   --primary: #0056d2;
   --primary-foreground: #ffffff;
 
-  /* Secondary — muted navy */
   --secondary: #1a233a;
   --secondary-foreground: #e6edf6;
 
-  /* Muted */
   --muted: #131c34;
   --muted-foreground: #94a3b8;
 
-  /* Accent — gold */
   --accent: #facc15;
   --accent-foreground: #1a1a1a;
 
@@ -78,7 +73,6 @@
   --input: rgba(255, 255, 255, 0.08);
   --ring: #0056d2;
 
-  /* Card accent borders */
   --accent-orange: #f97316;
   --accent-yellow: #facc15;
   --accent-blue: #3b82f6;
@@ -100,6 +94,64 @@
   --sidebar-accent-foreground: #e6edf6;
   --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #0056d2;
+
+  --glow-1: rgba(0, 86, 210, 0.18);
+  --glow-2: rgba(168, 85, 247, 0.14);
+}
+
+/* LIGHT theme */
+.light {
+  --radius: 0.75rem;
+
+  --background: #f7f8fc;
+  --foreground: #0c1530;
+
+  --card: #ffffff;
+  --card-foreground: #0c1530;
+  --popover: #ffffff;
+  --popover-foreground: #0c1530;
+
+  --primary: #0056d2;
+  --primary-foreground: #ffffff;
+
+  --secondary: #eef2fa;
+  --secondary-foreground: #0c1530;
+
+  --muted: #eef2fa;
+  --muted-foreground: #5b6478;
+
+  --accent: #facc15;
+  --accent-foreground: #1a1a1a;
+
+  --destructive: #dc2626;
+  --border: rgba(12, 21, 48, 0.10);
+  --input: rgba(12, 21, 48, 0.08);
+  --ring: #0056d2;
+
+  --accent-orange: #f97316;
+  --accent-yellow: #eab308;
+  --accent-blue: #2563eb;
+  --accent-purple: #9333ea;
+  --accent-teal: #0d9488;
+  --accent-red: #dc2626;
+
+  --chart-1: #f97316;
+  --chart-2: #eab308;
+  --chart-3: #2563eb;
+  --chart-4: #9333ea;
+  --chart-5: #0d9488;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0c1530;
+  --sidebar-primary: #0056d2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef2fa;
+  --sidebar-accent-foreground: #0c1530;
+  --sidebar-border: rgba(12, 21, 48, 0.08);
+  --sidebar-ring: #0056d2;
+
+  --glow-1: rgba(0, 86, 210, 0.10);
+  --glow-2: rgba(147, 51, 234, 0.07);
 }
 
 @layer base {
@@ -112,8 +164,8 @@
   body {
     @apply bg-background text-foreground;
     background-image:
-      radial-gradient(circle at 15% 20%, rgba(0, 86, 210, 0.12) 0%, transparent 35%),
-      radial-gradient(circle at 85% 60%, rgba(168, 85, 247, 0.08) 0%, transparent 35%);
+      radial-gradient(circle at 15% 20%, var(--glow-1) 0%, transparent 35%),
+      radial-gradient(circle at 85% 60%, var(--glow-2) 0%, transparent 35%);
     background-attachment: fixed;
   }
 }
@@ -124,15 +176,15 @@
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #02081b;
+  background: var(--background);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1a233a;
+  background: var(--muted);
   border-radius: 6px;
-  border: 2px solid #02081b;
+  border: 2px solid var(--background);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #0056d2;
+  background: var(--primary);
 }
 
 /* Bengali text helper */
@@ -143,9 +195,10 @@
 /* Subtle grid pattern */
 .bg-grid {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
   background-size: 50px 50px;
+  opacity: 0.7;
 }
 
 /* Glow ring for CTAs */
@@ -155,20 +208,11 @@
 }
 @keyframes pulse-blue {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(0, 86, 210, 0.55), 0 10px 30px -8px rgba(0, 86, 210, 0.45);
+    box-shadow: 0 0 0 0 rgba(0, 86, 210, 0.45), 0 10px 30px -8px rgba(0, 86, 210, 0.40);
   }
   50% {
-    box-shadow: 0 0 0 12px rgba(0, 86, 210, 0), 0 14px 40px -8px rgba(0, 86, 210, 0.6);
+    box-shadow: 0 0 0 12px rgba(0, 86, 210, 0), 0 14px 40px -8px rgba(0, 86, 210, 0.55);
   }
-}
-
-/* Marquee for alert bar */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-.animate-marquee {
-  animation: marquee 24s linear infinite;
 }
 
 /* Slide up entrance */

@@ -1,7 +1,8 @@
 import { AlertBar } from "@/components/landing/AlertBar";
 import { Header } from "@/components/landing/Header";
 import { Hero } from "@/components/landing/Hero";
-import { WhyUseful } from "@/components/landing/WhyUseful";
+import { NotesFeatures } from "@/components/landing/NotesFeatures";
+import { WhyNeeded } from "@/components/landing/WhyNeeded";
 import { SampleNotes } from "@/components/landing/SampleNotes";
 import { Benefits } from "@/components/landing/Benefits";
 import { Reviews } from "@/components/landing/Reviews";
@@ -20,7 +21,8 @@ export default function Home() {
 
       <div className="flex-1">
         <Hero />
-        <WhyUseful />
+        <NotesFeatures />
+        <WhyNeeded />
         <SampleNotes />
         <Benefits />
         <Reviews />

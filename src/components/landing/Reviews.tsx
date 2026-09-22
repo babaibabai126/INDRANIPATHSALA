@@ -1,6 +1,6 @@
 "use client";
 
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, ExternalLink } from "lucide-react";
 
 const REVIEWS = [
   {
@@ -64,24 +64,27 @@ export function Reviews() {
     <section className="relative py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#2DD4BF]/30 bg-[#2DD4BF]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#2DD4BF]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-accent-teal/30 bg-accent-teal/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent-teal">
             <Quote className="h-3.5 w-3.5" />
-            <span>Google Reviews</span>
+            <span>Our Students Review</span>
           </div>
-          <h2 className="bn mt-4 text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+          <h2 className="bn mt-4 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
             আমাদের ইন্দ্রানী পাঠশালার{" "}
-            <span className="bg-gradient-to-r from-[#FACC15] to-[#F97316] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-accent to-accent-orange bg-clip-text text-transparent">
               ছাত্র-ছাত্রীদের রিভিউ
             </span>
           </h2>
+          <p className="bn mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
+            আমাদের ইন্দ্রানী পাঠশালার ছাত্র-ছাত্রীদের রিভিউ — নিচে দেখুন।
+          </p>
           <div className="mt-4 flex items-center justify-center gap-3">
             <div className="flex gap-0.5">
               {[1, 2, 3, 4, 5].map((s) => (
-                <Star key={s} className="h-5 w-5 fill-[#FACC15] text-[#FACC15]" />
+                <Star key={s} className="h-5 w-5 fill-accent text-accent" />
               ))}
             </div>
-            <div className="text-sm text-slate-400">
-              <span className="font-bold text-white">4.9</span>
+            <div className="text-sm text-muted-foreground">
+              <span className="font-bold text-foreground">4.9</span>
               <span className="bn"> / 5 · 412+ রিভিউ</span>
             </div>
           </div>
@@ -91,42 +94,44 @@ export function Reviews() {
           {REVIEWS.map((r, i) => (
             <div
               key={i}
-              className="relative rounded-2xl border border-white/8 bg-[#0e1730]/80 p-6 transition hover:border-white/15 hover:bg-[#131e3a]"
+              className="relative rounded-2xl border border-border bg-card p-6 transition hover:border-primary/40 hover:bg-muted/30"
             >
-              <Quote className="absolute right-4 top-4 h-8 w-8 text-white/5" />
+              <Quote className="absolute right-4 top-4 h-8 w-8 text-muted/40" />
               <div className="flex items-center gap-3">
                 <div
-                  className="flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold text-white"
-                  style={{ background: `${r.color}30`, color: r.color }}
+                  className="flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold"
+                  style={{ background: `${r.color}25`, color: r.color }}
                 >
                   {r.initials}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-white">{r.name}</div>
-                  <div className="text-[11px] text-slate-400">{r.course}</div>
+                  <div className="text-sm font-semibold text-foreground">{r.name}</div>
+                  <div className="text-[11px] text-muted-foreground">{r.course}</div>
                 </div>
               </div>
               <div className="mt-3 flex gap-0.5">
                 {Array.from({ length: r.rating }).map((_, idx) => (
-                  <Star key={idx} className="h-3.5 w-3.5 fill-[#FACC15] text-[#FACC15]" />
+                  <Star key={idx} className="h-3.5 w-3.5 fill-accent text-accent" />
                 ))}
               </div>
-              <p className="bn mt-3 text-[13px] leading-relaxed text-slate-300">
+              <p className="bn mt-3 text-[13px] leading-relaxed text-foreground/80">
                 “{r.text}”
               </p>
             </div>
           ))}
         </div>
 
+        {/* Google review link */}
         <div className="mt-8 text-center">
           <a
             href="https://www.google.com/search?q=Indrani+Pathsala+reviews"
             target="_blank"
             rel="noopener noreferrer"
-            className="bn inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs font-semibold text-white transition hover:bg-white/10"
+            className="bn inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2 text-xs font-semibold text-foreground transition hover:bg-muted/50"
           >
-            <Star className="h-3.5 w-3.5 fill-[#FACC15] text-[#FACC15]" />
-            সব Google Review দেখুন
+            <Star className="h-3.5 w-3.5 fill-accent text-accent" />
+            GOOGLE REVIEW LINK — সব Google Review দেখুন
+            <ExternalLink className="h-3 w-3" />
           </a>
         </div>
       </div>

@@ -50,15 +50,15 @@ export function FAQ() {
     <section className="relative py-16 sm:py-20">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#3B82F6]/30 bg-[#3B82F6]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#3B82F6]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
             <HelpCircle className="h-3.5 w-3.5" />
-            <span>FAQs</span>
+            <span>Student-দের সবচেয়ে জিজ্ঞাসিত প্রশ্ন (FAQs)</span>
           </div>
-          <h2 className="bn mt-4 text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+          <h2 className="bn mt-4 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
             স্টুডেন্টদের সবচেয়ে জিজ্ঞাসিত{" "}
-            <span className="text-yellow-300">প্রশ্ন (FAQs)</span>
+            <span className="text-accent">প্রশ্ন (FAQs)</span>
           </h2>
-          <p className="bn mx-auto mt-3 text-sm text-slate-400 sm:text-base">
+          <p className="bn mx-auto mt-3 text-sm text-muted-foreground sm:text-base">
             নোটস সম্পর্কে আপনার সব সন্দেহ দূর করুন। নিচের উত্তরগুলো পড়ুন।
           </p>
         </div>
@@ -67,7 +67,7 @@ export function FAQ() {
           {FAQS.map((faq, i) => (
             <div
               key={i}
-              className="overflow-hidden rounded-2xl border border-white/8 bg-[#0e1730]/80 transition hover:border-white/15"
+              className="overflow-hidden rounded-2xl border border-border bg-card transition hover:border-primary/40"
             >
               <button
                 onClick={() => setOpen(open === i ? null : i)}
@@ -75,16 +75,16 @@ export function FAQ() {
                 aria-expanded={open === i}
               >
                 <div className="flex items-start gap-3">
-                  <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#3B82F6]/20 text-[10px] font-bold text-[#3B82F6]">
+                  <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary">
                     Q{i + 1}
                   </span>
-                  <span className="bn text-[14px] font-semibold leading-snug text-white">
+                  <span className="bn text-[14px] font-semibold leading-snug text-foreground">
                     {faq.q}
                   </span>
                 </div>
                 <div
-                  className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 transition ${
-                    open === i ? "rotate-180 bg-[#3B82F6]/20 text-[#3B82F6]" : "text-slate-400"
+                  className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-border bg-muted/50 transition ${
+                    open === i ? "rotate-180 bg-primary/20 text-primary" : "text-muted-foreground"
                   }`}
                 >
                   <ChevronDown className="h-4 w-4" />
@@ -96,8 +96,8 @@ export function FAQ() {
                 }`}
               >
                 <div className="overflow-hidden">
-                  <div className="bn border-t border-white/5 px-5 py-4 text-[13px] leading-relaxed text-slate-300 sm:pl-14">
-                    <span className="font-semibold text-emerald-400">উত্তর:</span>{" "}
+                  <div className="bn border-t border-border px-5 py-4 text-[13px] leading-relaxed text-foreground/80 sm:pl-14">
+                    <span className="font-semibold text-emerald-500">উত্তর:</span>{" "}
                     {faq.a}
                   </div>
                 </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_Bengali, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const notoBengali = Noto_Sans_Bengali({
   variable: "--font-bengali",
@@ -53,7 +54,7 @@ export default function RootLayout({
       <body
         className={`${notoBengali.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
       >
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
         <Toaster />
       </body>
     </html>
