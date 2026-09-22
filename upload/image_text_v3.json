@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "HEADING: Welcome to Indrani Pathsala\nSUBTITLE/INTRO PARAGRAPH: আপনি কি একজন ভিডিও ব্যাখ্যা সহযোগে? অথবা পরীক্ষার নিদিষ্ট সময়ের মধ্যে আপনি সঠিক কর্ম আমাদের টিউশন সার্ভিস নিতে চান Bengali Translation.\nSECTION 1 TITLE: আমাদের লক্ষ্য ও কি বিশেষ আছে?\n- i. PCI ER-20 Latest Syllabus অনুযায়ী তৈরি।\n- ii. (কোন Chapter এক কই নই পরীক্ষাতে আসবে তার বিশ্লেষণ)।\n- iii. সজল ও সাবলীল আছে ।\n- iv. VVI MCQ , SAQ, FIB এবং Suggestive Long Question-Answer\n- v. বাংলা, হিন্দি, ইংরেজি Translation (আপনার বোঝার সুবিধার্থে)\n- vi. Chapter wise Summary(সমস্তকষ্টিত chapter-এর মূল ধারণা (পড়তে সাহায্য করবে)\n- vii. প্রত্যেকটি বিষয়ের আলাদাভাবে সম্পূর্ণ ধারণা।\nSECTION 2 TITLE: এই লক্ষ্য টি কাদের প্রয়োজন?\n- i. যারা চাকরিপ্রার্থী ও কর্মচারী কঠি।\n- ii. পরীক্ষার জন্য বিরতি (gap) থাকা প্রার্থীগণ।\n- iii. সাফল্যজনক বা ইয়ার-ব্যাক (Year back) পাশে পরীক্ষার্থী।\n- iv. আগাম Exit Exam নিয়ে ভীতু প্রার্থীগণ।\n- v. আপনি (কর্মক্ষেত্র বা পড়াশোনা বিঘ্নক)।\n- vi. সুযোগ ও সুবিধানা এক সাথে সম্পন্নলা শিক্ষার্থী।\n- vii. ইউনিভার্সিটি আবার পড়তে পিছিয়ে।\n- viii. পরীক্ষার ঠিক আগে (তড়িৎ) তে পিছিয়ে।\n- ix. যাদু অথবা আশুলিক জাতীয়তে বিশ্বাসী শিক্ষার্থী।\nBUTTON TEXT: [None]\nFOOTER/OTHER TEXT: যত বড়ই একলার হোক এবং বর্তমান পরীক্ষার কঠিন বাবস্থা ও পাশ করার নিঃশ্চয়তা—সর্বক্ষেত্রে সমাধান (পড়তে সহজ থাকতে পরীক্ষাম দেন এবং আপনাই আমাদের টিউশন সার্ভিস নিতে সক্ষম করুন।",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1790080054,
+  "id": "20260922202708398922864d964f71",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20260922202708398922864d964f71",
+  "usage": {
+    "completion_tokens": 1272,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2835,
+    "prompt_tokens_details": {
+      "cached_tokens": 2
+    },
+    "total_tokens": 4107
+  }
+}

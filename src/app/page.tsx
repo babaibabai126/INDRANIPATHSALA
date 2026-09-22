@@ -1,8 +1,6 @@
 import { AlertBar } from "@/components/landing/AlertBar";
 import { Header } from "@/components/landing/Header";
 import { Hero } from "@/components/landing/Hero";
-import { NotesFeatures } from "@/components/landing/NotesFeatures";
-import { WhyNeeded } from "@/components/landing/WhyNeeded";
 import { SampleNotes } from "@/components/landing/SampleNotes";
 import { Benefits } from "@/components/landing/Benefits";
 import { Reviews } from "@/components/landing/Reviews";
@@ -20,9 +18,14 @@ export default function Home() {
       <Header />
 
       <div className="flex-1">
+        {/* Hero now contains:
+            - BIG "Welcome to Indrani Pathsala" heading
+            - Intro paragraph (verbatim from PDF)
+            - "আমাদের নোটস-এ কী বিশেষ আছে?" (7 items i–vii)
+            - IMAGE placeholder
+            - Middle paragraph (verbatim)
+            - "এই নোটসটি কাদের প্রয়োজন?" (9 items i–ix) */}
         <Hero />
-        <NotesFeatures />
-        <WhyNeeded />
         <SampleNotes />
         <Benefits />
         <Reviews />

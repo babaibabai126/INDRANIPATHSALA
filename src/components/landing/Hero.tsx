@@ -1,65 +1,159 @@
 "use client";
 
-import { useState } from "react";
-import { Sparkles, ShieldCheck, ChevronRight, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { ShieldCheck, ChevronRight } from "lucide-react";
+
+/**
+ * Hero — EXACT text from PDF / poster screenshot (verbatim).
+ * Big "Welcome to Indrani Pathsala" hero heading on top.
+ * Then: intro paragraph + "আমাদের নোটস-এ কী বিশেষ আছে?" (7 items i–vii)
+ * + IMAGE placeholder + middle paragraph
+ * + "এই নোটসটি কাদের প্রয়োজন?" (9 items i–ix)
+ *
+ * NOTE: User explicitly said "EI WISE LEKHA GULO DAO..NIJER MOTON LEKHA DEBE NA"
+ * = "Use the text exactly like this, don't write your own version"
+ * So all Bengali text below is a verbatim copy from the reference poster.
+ */
+
+const FEATURES: { n: string; text: string }[] = [
+  { n: "i",   text: "PCI ER-20 Latest Syllabus অনুযায়ী তৈরি।" },
+  { n: "ii",  text: "প্রত্যেক Chapter এক করে নতুন পরীক্ষার আলো ও বিশ্লেষণ।" },
+  { n: "iii", text: "সহজ ও সাবলীল ভাষায়।" },
+  { n: "iv",  text: "VVI MCQ, SAQ, FIB এবং Suggestive Long Question-Answer" },
+  { n: "v",   text: "বাংলা, হিন্দি, ওড়িয়া Translation (আপনার বোঝার সুবিধার্থে)" },
+  { n: "vi",  text: "Chapter wise Summary (পরীক্ষার আগে chapter-এর মূল ধারণা পেতে সাহায্য করবে)" },
+  { n: "vii", text: "প্রত্যেকটি বিষয়ের আলাদাভাবে সম্পূর্ণ ধারণা।" },
+];
+
+const NEEDED_FOR: { n: string; text: string }[] = [
+  { n: "i",   text: "ব্যস্ত চাকরিজীবী ও কর্মচারী ব্যক্তি।" },
+  { n: "ii",  text: "পরীক্ষার্থী যাদের বিরতি (gap) থাকে অধ্যয়নী।" },
+  { n: "iii", text: "সাফল্যজনক বা ইয়ার-ব্যাক (Year back) পড়ুয়া পরীক্ষার্থী।" },
+  { n: "iv",  text: "আগামী Exit Exam নিয়ে চিন্তিত ছাত্রছাত্রী।" },
+  { n: "v",   text: "আত্মবিশ্বাস কমে যাওয়া ছাত্রছাত্রী।" },
+  { n: "vi",  text: "সুযোগ ও সুবিধা একসাথে সম্পন্ন করতে চাওয়া শিক্ষার্থী।" },
+  { n: "vii", text: "ইউনিভার্সিটি অধ্যয়নে জড়িত থাকা শিক্ষার্থী।" },
+  { n: "viii",text: "পরীক্ষার ঠিক আগে যুক্ত পরীক্ষার্থী।" },
+  { n: "ix",  text: "যাদের অভ্যন্তর আংশিক জ্ঞান আছে বিষয়ে শিক্ষার্থী।" },
+];
 
 export function Hero() {
-  const [form, setForm] = useState({ name: "", phone: "", course: "D.Pharm 1st Year" });
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.phone) return;
-    setLoading(true);
-    try {
-      await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-      setSubmitted(true);
-    }
-  };
-
   return (
     <section id="top" className="relative overflow-hidden">
       <div className="absolute inset-0 bg-grid" />
-      <div className="pointer-events-none absolute -top-32 left-1/4 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 right-1/4 h-72 w-72 rounded-full bg-accent-purple/15 blur-3xl" />
+      <div className="pointer-events-none absolute -top-40 left-1/2 h-96 w-[800px] -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
+      <div className="pointer-events-none absolute top-40 -left-20 h-72 w-72 rounded-full bg-accent-purple/15 blur-3xl" />
+      <div className="pointer-events-none absolute top-40 -right-20 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
 
-      <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-12 sm:px-6 sm:pt-16 lg:grid lg:grid-cols-12 lg:gap-8 lg:pb-24 lg:pt-20">
-        {/* LEFT: copy */}
-        <div className="lg:col-span-7">
-          <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span className="bn">Welcome to Indrani Pathsala</span>
+      <div className="relative mx-auto max-w-5xl px-4 pb-16 pt-12 sm:px-6 sm:pt-16 lg:pb-24 lg:pt-20">
+        {/* Logo + brand mark */}
+        <div className="flex justify-center">
+          <div className="relative h-20 w-20 overflow-hidden rounded-2xl ring-4 ring-primary/30 shadow-xl sm:h-24 sm:w-24">
+            <Image src="/images/logo.jpeg" alt="Indrani Pathsala Logo" fill sizes="96px" className="object-cover" priority />
           </div>
+        </div>
 
-          <h1 className="bn mt-5 text-3xl font-extrabold leading-[1.15] tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-            আপনিও কি একজন ডিপ্লোমা ফার্মেসি স্টুডেন্ট?
-            <br />
-            <span className="text-primary">তবে পরীক্ষায় ভালো</span>{" "}
-            <span className="text-accent">রেজাল্টের জন্য</span>{" "}
-            <span className="text-primary">আজই সংগ্রহ করুন</span>
-            <br />
-            <span className="bn text-foreground/90">আমাদের ইন্দ্রানী সাজেশন নোটসটি</span>{" "}
-            <span className="bg-gradient-to-r from-primary to-accent-blue bg-clip-text text-transparent">
-              Bengali Translation সহ।
+        {/* BIG "Welcome to Indrani Pathsala" hero heading */}
+        <div className="mt-6 text-center">
+          <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            Welcome to{" "}
+            <span className="block bg-gradient-to-r from-primary via-accent-blue to-accent-purple bg-clip-text text-transparent sm:inline">
+              Indrani Pathsala
             </span>
           </h1>
 
-          <p className="bn mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            গত বছরের পড়ানো হাজার এবং বিগত বছরের প্রশ্ন বিশ্লেষণ করে প্রস্তুত — সব কিছু আছে
-            সমাধান করতে সময় থাকলে নিয়ে যান এবং আজই আমাদের ইন্দ্রানী সাজেশন নোটস সংগ্রহ করুন।
+          {/* intro paragraph — verbatim */}
+          <p className="bn mx-auto mt-6 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            আপনি কি একজন ডিপ্লোমা ফার্মেসি স্টুডেন্ট? তাহলে পরীক্ষার নিয়ত সাপ্তাহের জন্য
+            আপনি সঠিক সময়ে আমাদের সাহায্য নিন নইলে নক Bengali Translation.
           </p>
+        </div>
 
-          {/* trust row */}
-          <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+        {/* CTAs */}
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="#pricing"
+            className="glow-blue inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:opacity-90"
+          >
+            <span className="bn">নোটস কিনুন</span> <ChevronRight className="h-4 w-4" />
+          </a>
+          <a
+            href="#notes-features"
+            className="bn inline-flex items-center gap-2 rounded-full border border-border bg-card px-7 py-3 text-sm font-semibold text-foreground transition hover:bg-muted/50"
+          >
+            নোটস-এ কী কী আছে?
+          </a>
+        </div>
+
+        {/* === Section: আমাদের নোটস-এ কী বিশেষ আছে? === */}
+        <div id="notes-features" className="mt-16 rounded-3xl border border-border bg-card/60 p-6 shadow-xl backdrop-blur-sm sm:p-10">
+          <h2 className="bn text-center text-2xl font-bold text-foreground sm:text-3xl">
+            আমাদের নোটস-এ{" "}
+            <span className="bg-gradient-to-r from-accent to-accent-orange bg-clip-text text-transparent">
+              কী বিশেষ আছে?
+            </span>
+          </h2>
+
+          <ol className="bn mx-auto mt-8 max-w-3xl space-y-3 text-[15px] leading-relaxed text-foreground/90 sm:text-base">
+            {FEATURES.map((f) => (
+              <li key={f.n} className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-7 w-9 flex-shrink-0 items-center justify-center rounded-md bg-primary/15 font-mono text-[12px] font-bold text-primary">
+                  {f.n}.
+                </span>
+                <span>{f.text}</span>
+              </li>
+            ))}
+          </ol>
+
+          {/* IMAGE placeholder (as per poster) */}
+          <div className="mt-10 flex flex-col items-center">
+            <div className="relative flex h-44 w-full max-w-md flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted/30 p-8 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/15 text-accent">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+                  <path d="M21 15l-5-5L5 21" />
+                </svg>
+              </div>
+              <div className="mt-3 text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                IMAGE
+              </div>
+              <div className="bn mt-1 text-[11px] text-muted-foreground">
+                নোটসের স্যাম্পল পেজের ছবি এখানে দেখানো হবে
+              </div>
+            </div>
+          </div>
+
+          {/* middle paragraph — verbatim */}
+          <p className="bn mx-auto mt-8 max-w-3xl text-center text-[14px] leading-relaxed text-muted-foreground sm:text-[15px]">
+            যত বড়ই একল হোক এবং বর্তমান পরীক্ষার কঠিন ব্যবস্থা ও পাশ করার
+            নিশ্চয়তা—সবক্ষেত্রে সমাধান পেতে সময় থাকলে নিয়ে যান এবং আজই আমাদের
+            ইন্দ্রানী সাজেশন নোটস সংগ্রহ করুন।
+          </p>
+        </div>
+
+        {/* === Section: এই নোটসটি কাদের প্রয়োজন? === */}
+        <div className="mt-8 rounded-3xl border border-border bg-card/60 p-6 shadow-xl backdrop-blur-sm sm:p-10">
+          <h2 className="bn text-center text-2xl font-bold text-foreground sm:text-3xl">
+            এই নোটসটি{" "}
+            <span className="bg-gradient-to-r from-accent-teal to-primary bg-clip-text text-transparent">
+              কাদের প্রয়োজন?
+            </span>
+          </h2>
+
+          <ol className="bn mx-auto mt-8 max-w-3xl space-y-3 text-[15px] leading-relaxed text-foreground/90 sm:text-base">
+            {NEEDED_FOR.map((f) => (
+              <li key={f.n} className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-7 w-9 flex-shrink-0 items-center justify-center rounded-md bg-accent-teal/15 font-mono text-[12px] font-bold text-accent-teal">
+                  {f.n}.
+                </span>
+                <span>{f.text}</span>
+              </li>
+            ))}
+          </ol>
+
+          {/* Trust row at the end */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-emerald-500" />
               <span className="bn">Secure Razorpay Payment</span>
@@ -72,149 +166,6 @@ export function Hero() {
               <ShieldCheck className="h-4 w-4 text-accent" />
               <span className="bn">10 second পরেই PDF</span>
             </div>
-          </div>
-
-          {/* CTAs */}
-          <div className="mt-7 flex flex-wrap gap-3">
-            <a
-              href="#pricing"
-              className="glow-blue inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:opacity-90"
-            >
-              <span className="bn">Buy Now</span> <ChevronRight className="h-4 w-4" />
-            </a>
-            <a
-              href="#notes"
-              className="bn inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-muted/50"
-            >
-              নোটস এ কী কী আছে?
-            </a>
-          </div>
-        </div>
-
-        {/* RIGHT: inquiry form */}
-        <div className="mt-10 lg:col-span-5 lg:mt-0">
-          <div className="relative rounded-2xl border border-border bg-card p-5 shadow-2xl shadow-primary/10 sm:p-6">
-            <div className="mb-4">
-              <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-muted-foreground">
-                <span className="bn">এই ব্যাচের সিট সংখ্যা</span>
-                <span className="text-accent">
-                  412 / 500 <span className="bn">সিট বুকড</span>
-                </span>
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#FF4500] to-[#facc15]"
-                  style={{ width: "82%" }}
-                />
-              </div>
-            </div>
-
-            <div className="text-center">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-primary">
-                Free Inquiry
-              </div>
-              <h3 className="bn mt-1 text-xl font-bold text-foreground">
-                নোটস সম্পর্কে জানুন
-              </h3>
-              <p className="bn mt-1 text-xs text-muted-foreground">
-                ফর্ম পূরণ করুন, আমরা আপনাকে কল করব
-              </p>
-            </div>
-
-            {submitted ? (
-              <div className="mt-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-5 text-center">
-                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
-                  <ShieldCheck className="h-6 w-6 text-emerald-500" />
-                </div>
-                <div className="bn text-sm font-semibold text-foreground">
-                  ধন্যবাদ {form.name}! আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।
-                </div>
-                <a
-                  href="#pricing"
-                  className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:opacity-90"
-                >
-                  Buy Now <ChevronRight className="h-3.5 w-3.5" />
-                </a>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="mt-5 space-y-3">
-                <div>
-                  <label className="bn mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Full Name (নাম)
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder="আপনার নাম লিখুন"
-                    className="bn w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/40"
-                  />
-                </div>
-                <div>
-                  <label className="bn mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Phone Number (মোবাইল)
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    placeholder="98XXXXXXXX"
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/40"
-                  />
-                </div>
-                <div>
-                  <label className="bn mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Course (কোর্স)
-                  </label>
-                  <select
-                    value={form.course}
-                    onChange={(e) => setForm({ ...form, course: e.target.value })}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/40"
-                  >
-                    <option>D.Pharm 1st Year</option>
-                    <option>D.Pharm 2nd Year</option>
-                    <option>Both (Combo Pack)</option>
-                  </select>
-                </div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="glow-blue mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      Request Call Back
-                      <ChevronRight className="h-4 w-4" />
-                    </>
-                  )}
-                </button>
-                <p className="flex items-center justify-center gap-1.5 pt-1 text-center text-[10px] text-muted-foreground">
-                  <ShieldCheck className="h-3 w-3 text-emerald-500" />
-                  <span className="bn">আপনার তথ্য 100% নিরাপদ</span>
-                </p>
-              </form>
-            )}
-          </div>
-
-          <div className="mt-4 flex items-center justify-center gap-3 text-xs text-muted-foreground">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-background bg-gradient-to-br from-primary to-accent-purple text-[10px] font-bold text-white"
-                >
-                  {String.fromCharCode(64 + i)}
-                </div>
-              ))}
-            </div>
-            <span className="bn">412+ স্টুডেন্ট এই সপ্তাহে নোটস কিনেছে</span>
           </div>
         </div>
       </div>
