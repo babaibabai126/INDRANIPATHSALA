@@ -81,7 +81,7 @@ export function Reviews() {
             </span>
           </h2>
           <p className="bn mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            (এখানে Review- গুলো থাকবে)
+            আমাদের ছাত্র-ছাত্রীদের কাছ থেকে কিছু সত্যিকারের রিভিউ নিচে দেওয়া হলো।
           </p>
           <div className="mt-4 flex items-center justify-center gap-3">
             <div className="flex gap-0.5">

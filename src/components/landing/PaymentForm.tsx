@@ -12,16 +12,19 @@ import {
   CheckCircle2,
   Download,
   Clock,
-  ExternalLink,
 } from "lucide-react";
+import { PaymentModal } from "./PaymentModal";
 
 /**
- * Payment Details form — full flow:
- *   1. User fills the form
+ * Payment Details form — full in-page flow (no redirect to other tab):
+ *   1. User fills the form (Name, MOB No, Email, Location, Course)
  *   2. We POST to /api/purchase -> saved as PENDING -> admin sees it
- *   3. Show PAY button that opens the Razorpay link in new tab
- *   4. After user returns (with ?paid=<id> in URL), we confirm payment
+ *   3. PAY button opens IN-PAGE PaymentModal (iframe) with Razorpay link
+ *   4. After payment: user clicks "আমি পরিশোধ করেছি" -> we confirm payment -> PAID
  *   5. Once PAID, show PDF download button
+ *
+ * NOTE: Razorpay API key NOT needed since we use Payment Links (rzp.io/rzp/...)
+ * in an iframe popup. The link is the source of truth.
  */
 
 const COURSES = [
@@ -45,12 +48,12 @@ export function PaymentForm() {
   const [state, setState] = useState<FormState>("form");
   const [error, setError] = useState<string | null>(null);
   const [purchaseId, setPurchaseId] = useState<string | null>(null);
-  const [razorpayUrl, setRazorpayUrl] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
 
   const selectedCourse = COURSES.find((c) => c.value === form.course);
 
-  // Handle return from Razorpay (?paid=<id> in URL)
+  // Handle ?paid=<id> in URL (returning from old-style redirect)
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
@@ -60,7 +63,6 @@ export function PaymentForm() {
       setState("pending");
       setConfirming(true);
       confirmPayment(paidId);
-      // Clean the URL
       const cleanUrl = window.location.pathname + window.location.hash;
       window.history.replaceState({}, "", cleanUrl);
     }
@@ -85,7 +87,6 @@ export function PaymentForm() {
       }
     } catch (err) {
       console.error(err);
-      // Keep state as "pending" — user can retry
     } finally {
       setConfirming(false);
     }
@@ -107,10 +108,9 @@ export function PaymentForm() {
       }
       const data = await res.json();
       setPurchaseId(data.purchase.id);
-      setRazorpayUrl(data.razorpayUrl);
       setState("pending");
-      // Auto-open Razorpay in new tab
-      window.open(data.razorpayUrl, "_blank", "noopener,noreferrer");
+      // Open in-page payment modal (NO redirect to other tab)
+      setModalOpen(true);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -310,7 +310,7 @@ export function PaymentForm() {
                   <p className="bn mt-1 text-[13px] text-muted-foreground">
                     {confirming
                       ? "আপনার Payment সফল হয়েছে কিনা যাচাই করা হচ্ছে, একটু অপেক্ষা করুন।"
-                      : "নতুন ট্যাবে Razorpay খোলা হয়েছে। Payment সম্পূর্ণ করে এই পেজে ফিরে আসুন — স্বয়ংক্রিয়ভাবে verify হবে।"}
+                      : "নিচের বাটনে ক্লিক করে payment popup খুলুন, payment সম্পূর্ণ করুন।"}
                   </p>
                   <p className="bn mt-2 text-[11px] text-muted-foreground">
                     আপনার Email: <span className="font-mono font-semibold">{form.email}</span>
@@ -318,15 +318,13 @@ export function PaymentForm() {
 
                   {!confirming && (
                     <>
-                      <a
-                        href={razorpayUrl || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:opacity-90"
+                      <button
+                        onClick={() => setModalOpen(true)}
+                        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground hover:opacity-90"
                       >
-                        <ExternalLink className="h-3.5 w-3.5" />
-                        Razorpay-এ আবার খুলুন
-                      </a>
+                        <CreditCard className="h-4 w-4" />
+                        Payment Popup খুলুন
+                      </button>
                       <button
                         onClick={() => purchaseId && confirmPayment(purchaseId)}
                         className="mt-2 block w-full text-xs font-medium text-accent underline hover:no-underline"
@@ -393,6 +391,23 @@ export function PaymentForm() {
           </div>
         </div>
       </div>
+
+      {/* IN-PAGE payment modal (iframe with Razorpay payment link) */}
+      <PaymentModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        url={selectedCourse?.razorpayUrl || ""}
+        courseLabel={selectedCourse?.label || ""}
+        amount={selectedCourse?.amount || 0}
+        userEmail={form.email}
+        userName={form.name}
+        onPaid={() => {
+          if (purchaseId) {
+            setConfirming(true);
+            confirmPayment(purchaseId);
+          }
+        }}
+      />
     </section>
   );
 }

@@ -34,6 +34,7 @@ export function Footer() {
               <li><a href="#pricing" className="bn transition hover:text-foreground">Buy Notes</a></li>
               <li><a href="#payment" className="bn transition hover:text-foreground">Payment</a></li>
               <li><a href="#sample" className="bn transition hover:text-foreground">Sample Notes</a></li>
+              <li><a href="/blog" className="bn transition hover:text-foreground">Blog & Articles</a></li>
             </ul>
           </div>
 
@@ -104,9 +105,15 @@ export function Footer() {
             © {new Date().getFullYear()} Indrani Pathsala. All rights reserved.
           </div>
           <div className="flex items-center gap-3">
-            <a href="/admin" className="bn transition hover:text-foreground">Admin Dashboard</a>
-            <span>·</span>
-            <span className="bn">Made with ❤️ for D.Pharm Students</span>
+            <a
+              href="https://aarohantechsolutions.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bn font-semibold text-foreground transition hover:text-primary"
+              title="aarohantechsolutions.in"
+            >
+              Developed by Aarohan Tech Solutions
+            </a>
             <Send className="h-3 w-3" />
           </div>
         </div>

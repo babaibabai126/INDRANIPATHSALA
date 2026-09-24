@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Phone, LayoutDashboard } from "lucide-react";
+import { Phone } from "lucide-react";
 
 export function Header() {
   return (
@@ -35,14 +35,6 @@ export function Header() {
           >
             <Phone className="h-3.5 w-3.5" />
             <span className="font-mono">8293742022</span>
-          </a>
-          <a
-            href="/admin"
-            className="hidden items-center gap-1.5 rounded-full border border-border px-3 py-2 text-xs font-medium text-foreground/90 transition hover:bg-muted/50 sm:inline-flex"
-            title="Admin Dashboard"
-          >
-            <LayoutDashboard className="h-3.5 w-3.5" />
-            <span>Admin</span>
           </a>
           <a
             href="#pricing"

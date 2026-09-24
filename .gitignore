@@ -52,3 +52,32 @@ prompt
 server.log
 # Skills directory
 /skills/
+
+# Database files (use Supabase Postgres instead)
+/db/
+*.db
+*.db-journal
+
+# Uploads (user-provided files)
+/upload/
+
+# Download (generated screenshots / outputs)
+/download/
+
+# Z.ai scripts
+/.zscripts/
+
+# Examples folder
+/examples/
+
+# Prisma local files
+prisma/migrations/dev/
+
+# OS files
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/

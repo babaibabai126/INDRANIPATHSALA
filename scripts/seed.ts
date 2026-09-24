@@ -18,7 +18,7 @@ const NAMES = [
   "Ankita Pal", "Rahul Banik", "Pritam Saha", "Sukanta Mal", "Mou Roy",
 ];
 
-const LOCATIONS = [
+const LOCS = [
   "Kolkata, WB", "Howrah, WB", "Durgapur, WB", "Siliguri, WB", "Asansol, WB",
   "Midnapore, WB", "Burdwan, WB", "Malda, WB", "Baharampur, WB", "Kharagpur, WB",
 ];
@@ -33,16 +33,16 @@ function randPhone() {
 }
 
 async function main() {
-  // Clear existing purchases
+  console.log("Clearing existing data...");
   await db.purchase.deleteMany({});
   await db.lead.deleteMany({});
 
-  // Generate 30 demo purchases spread over last 7 days
-  // Mix of PAID (24) and PENDING (6) statuses
+  console.log("Generating demo purchases...");
   const now = new Date();
-  for (let i = 0; i < 30; i++) {
-    const c = pick(COURSES);
-    const n = pick(NAMES);
+  // 25 purchases: 20 PAID, 5 PENDING (recent form submissions)
+  for (let i = 0; i < 25; i++) {
+    const c = COURSES[i % COURSES.length];
+    const n = NAMES[i % NAMES.length];
     const initials = n.split(" ").map((p) => p[0]).join("").toLowerCase();
     const ageDays = Math.floor(Math.random() * 7);
     const ageHours = Math.floor(Math.random() * 24);
@@ -50,15 +50,15 @@ async function main() {
     created.setDate(created.getDate() - ageDays);
     created.setHours(created.getHours() - ageHours);
 
-    // First 24 are PAID, last 6 are PENDING (recent submissions awaiting payment)
-    const status = i < 24 ? "PAID" : "PENDING";
+    // First 20 = PAID, last 5 = PENDING
+    const status = i < 20 ? "PAID" : "PENDING";
 
     await db.purchase.create({
       data: {
         name: n,
         email: `${initials}${Math.floor(Math.random() * 9999)}@gmail.com`.toLowerCase(),
         mobile: randPhone(),
-        location: pick(LOCATIONS),
+        location: pick(LOCS),
         course: c.code,
         courseLabel: c.label,
         amount: c.amount,
@@ -66,7 +66,9 @@ async function main() {
         createdAt: created,
       },
     });
+    process.stdout.write(".");
   }
+  console.log("");
 
   // A few demo leads
   for (let i = 0; i < 5; i++) {
@@ -80,7 +82,7 @@ async function main() {
   }
 
   const count = await db.purchase.count();
-  console.log(`✓ Seeded ${count} demo purchases`);
+  console.log(`✓ Seeded ${count} demo purchases + 5 leads to Supabase`);
 }
 
 main()

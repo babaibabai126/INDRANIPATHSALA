@@ -6,37 +6,35 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// Website contact leads from the inquiry form
+// Website contact leads from the inquiry form (hero section)
 model Lead {
   id        String   @id @default(cuid())
   name      String
   phone     String
   course    String   // "D.Pharm 1st Year" | "D.Pharm 2nd Year" | "Both (Combo Pack)"
   createdAt DateTime @default(now())
+
+  @@map("leads")
 }
 
-// Successful purchases from the payment form
+// Purchases — created when user fills payment form (status: PENDING),
+// marked PAID after Razorpay payment confirmation.
 model Purchase {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  mobile    String
-  location  String
-  course    String   // "1en" | "1combo" | "2en" | "2combo"
-  courseLabel String // human-readable, e.g. "1st Year — Combo (English+Bengali)"
-  amount    Int      // in INR
-  status    String   @default("PAID") // PAID | PENDING | REFUNDED
-  createdAt DateTime @default(now())
-}
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  mobile       String
+  location     String
+  course       String   // "1en" | "1combo" | "2en" | "2combo"
+  courseLabel  String   // human-readable, e.g. "1st Year — Combo (English+Bengali)"
+  amount       Int      // in INR
+  status       String   @default("PENDING") // PENDING | PAID | REFUNDED
+  razorpayPaymentId String? // populated after payment success
+  createdAt    DateTime @default(now())
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@map("purchases")
 }

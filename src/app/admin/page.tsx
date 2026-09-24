@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   TrendingUp,
@@ -20,6 +21,7 @@ import {
   CreditCard,
   Clock,
   CheckCircle2,
+  LogOut,
 } from "lucide-react";
 
 type Purchase = {
@@ -63,6 +65,9 @@ const fmtDate = (s: string) => new Date(s).toLocaleString("en-IN", {
 });
 
 export default function AdminPage() {
+  const router = useRouter();
+  const [authed, setAuthed] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -70,7 +75,32 @@ export default function AdminPage() {
   const [course, setCourse] = useState("");
   const [selected, setSelected] = useState<Purchase | null>(null);
 
+  // Check admin session — redirect to login if not authed
+  useEffect(() => {
+    const checkAuth = () => {
+      const session =
+        typeof window !== "undefined"
+          ? localStorage.getItem("indrani_admin_session") ||
+            sessionStorage.getItem("indrani_admin_session")
+          : null;
+      if (session !== "true") {
+        router.replace("/admin/login");
+      } else {
+        setAuthed(true);
+      }
+      setAuthChecking(false);
+    };
+    checkAuth();
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("indrani_admin_session");
+    sessionStorage.removeItem("indrani_admin_session");
+    router.push("/admin/login");
+  };
+
   const refresh = useCallback(async () => {
+    if (!authed) return;
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -89,12 +119,13 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  }, [course, q]);
+  }, [course, q, authed]);
 
   useEffect(() => {
+    if (!authed) return;
     const t = setTimeout(refresh, 250);
     return () => clearTimeout(t);
-  }, [refresh]);
+  }, [refresh, authed]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this purchase?")) return;
@@ -122,6 +153,18 @@ export default function AdminPage() {
   };
 
   const maxDay = stats ? Math.max(...stats.last7Days.map((d) => d.sales), 1) : 1;
+
+  // Auth gate — show loading while checking auth, redirect if not authed
+  if (authChecking || !authed) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3 text-muted-foreground">
+          <RefreshCw className="h-6 w-6 animate-spin text-primary" />
+          <p className="bn text-sm">অথেনটিকেশন যাচাই হচ্ছে...</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-background">
@@ -154,6 +197,13 @@ export default function AdminPage() {
               title="Refresh"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-destructive/30 text-destructive transition hover:bg-destructive/10"
+              title="Logout"
+            >
+              <LogOut className="h-3.5 w-3.5" />
             </button>
             <Link
               href="/"
