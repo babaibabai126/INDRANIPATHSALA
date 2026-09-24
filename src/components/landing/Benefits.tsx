@@ -30,10 +30,7 @@ export function Benefits() {
             <span className="bn">যা যা পাবেন</span>
           </div>
           <h2 className="bn mt-4 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
-            নোটস নিলে আপনার{" "}
-            <span className="bg-gradient-to-r from-accent-teal to-primary bg-clip-text text-transparent">
-              কী লাভ হবে?
-            </span>
+            নোটস নিলে আপনার কী লাভ হবে?
           </h2>
         </div>
 

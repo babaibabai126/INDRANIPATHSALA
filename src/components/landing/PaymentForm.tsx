@@ -10,10 +10,10 @@ import {
   Loader2,
   ShieldCheck,
   CheckCircle2,
-  Download,
   Clock,
 } from "lucide-react";
 import { PaymentModal } from "./PaymentModal";
+import { PaidFiles } from "./PaidFiles";
 
 /**
  * Payment Details form — full in-page flow (no redirect to other tab):
@@ -342,41 +342,34 @@ export function PaymentForm() {
 
               {/* STATE: paid — success, download PDF */}
               {state === "paid" && (
-                <div className="mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
-                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20">
-                    <CheckCircle2 className="h-7 w-7 text-emerald-500" />
-                  </div>
-                  <div className="bn text-lg font-bold text-foreground">
-                    ধন্যবাদ {form.name}!
-                  </div>
-                  <div className="bn mt-1 text-[13px] text-foreground/80">
-                    আপনার Payment সফল হয়েছে। আপনার কোর্সের PDF ডাউনলোড করুন:
-                  </div>
-
-                  <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        alert("PDF Download লিংক আপনার Email-এ পাঠানো হয়েছে।");
-                      }}
-                      className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2 text-xs font-bold text-primary-foreground hover:opacity-90"
-                    >
-                      <Download className="h-4 w-4" />
-                      ডাউনলোড করুন (PDF)
-                    </a>
+                <div className="mt-6">
+                  {/* Thank-you banner */}
+                  <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
+                    <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20">
+                      <CheckCircle2 className="h-7 w-7 text-emerald-500" />
+                    </div>
+                    <div className="bn text-lg font-bold text-foreground">
+                      ধন্যবাদ {form.name}!
+                    </div>
+                    <div className="bn mt-1 text-[13px] text-foreground/80">
+                      আপনার Payment সফল হয়েছে। নিচে আপনার কোর্সের সম্পূর্ণ নোটস ডাউনলোড করুন:
+                    </div>
                     <a
                       href={`mailto:${form.email}`}
-                      className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-5 py-2 text-xs font-semibold text-foreground hover:bg-muted/50"
+                      className="mt-3 inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted/50"
                     >
-                      <Mail className="h-4 w-4" />
+                      <Mail className="h-3.5 w-3.5" />
                       ইমেইল চেক করুন
                     </a>
+                    <p className="bn mt-3 text-[11px] text-muted-foreground">
+                      যেকোনো সমস্যায় আমাদের কল করুন: <span className="font-mono font-semibold">8293742022</span>
+                    </p>
                   </div>
 
-                  <p className="bn mt-4 text-[11px] text-muted-foreground">
-                    আপনার কেনাকাটার জন্য ধন্যবাদ। যেকোনো সমস্যায় আমাদের কল করুন: <span className="font-mono font-semibold">8293742022</span>
-                  </p>
+                  {/* Paid files — visible ONLY after payment */}
+                  <div className="mt-4">
+                    <PaidFiles courseCode={form.course} />
+                  </div>
                 </div>
               )}
 

@@ -111,10 +111,7 @@ export function Pricing() {
             <span>BUY NOW</span>
           </div>
           <h2 className="bn mt-4 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
-            D.Pharm 1st / 2nd Year{" "}
-            <span className="bg-gradient-to-r from-accent to-accent-orange bg-clip-text text-transparent">
-              Premium Suggestive Notes
-            </span>
+            D.Pharm 1st / 2nd Year Premium Suggestive Notes
           </h2>
         </div>
 

@@ -75,10 +75,7 @@ export function Reviews() {
             <span>Our Students Review</span>
           </div>
           <h2 className="bn mt-4 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
-            আমাদের ইন্দ্রাণী পাঠশালা র{" "}
-            <span className="bg-gradient-to-r from-accent to-accent-orange bg-clip-text text-transparent">
-              GOOGLE REVIEW LINK ADD হবে
-            </span>
+            আমাদের ইন্দ্রাণী পাঠশালা র GOOGLE REVIEW
           </h2>
           <p className="bn mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
             আমাদের ছাত্র-ছাত্রীদের কাছ থেকে কিছু সত্যিকারের রিভিউ নিচে দেওয়া হলো।
