@@ -22,6 +22,7 @@ type Plan = {
   features: { en: string; bn: string }[];
   popular?: boolean;
   code: string;
+  razorpayUrl: string;
 };
 
 const PLANS: Plan[] = [
@@ -34,6 +35,7 @@ const PLANS: Plan[] = [
     price: 999,
     originalPrice: 1499,
     code: "1en",
+    razorpayUrl: "https://rzp.io/rzp/GtZpWok",
     features: [
       { en: "Complete PCI ER-2020 Syllabus", bn: "সম্পূর্ণ PCI ER-2020 সিলেবাস" },
       { en: "Chapter-wise Summary", bn: "Chapter-wise সারাংশ" },
@@ -52,6 +54,7 @@ const PLANS: Plan[] = [
     originalPrice: 1999,
     popular: true,
     code: "1combo",
+    razorpayUrl: "https://rzp.io/rzp/mBBPn9cU",
     features: [
       { en: "Everything in English Version", bn: "English Version-এর সব সুবিধা" },
       { en: "Bengali Translation (chapter-wise)", bn: "প্রতিটি chapter-এ বাংলা অনুবাদ" },
@@ -69,6 +72,7 @@ const PLANS: Plan[] = [
     price: 999,
     originalPrice: 1499,
     code: "2en",
+    razorpayUrl: "https://rzp.io/rzp/GtZpWok",
     features: [
       { en: "Complete PCI ER-2020 Syllabus", bn: "সম্পূর্ণ PCI ER-2020 সিলেবাস" },
       { en: "Chapter-wise Summary", bn: "Chapter-wise সারাংশ" },
@@ -86,6 +90,7 @@ const PLANS: Plan[] = [
     price: 1499,
     originalPrice: 1999,
     code: "2combo",
+    razorpayUrl: "https://rzp.io/rzp/mBBPn9cU",
     features: [
       { en: "Everything in English Version", bn: "English Version-এর সব সুবিধা" },
       { en: "Bengali Translation (chapter-wise)", bn: "প্রতিটি chapter-এ বাংলা অনুবাদ" },
@@ -213,16 +218,18 @@ function PlanCard({ plan }: { plan: Plan }) {
       </ul>
 
       <a
-        href={`#payment?course=${plan.code}`}
-        onClick={(e) => {
-          e.preventDefault();
-          const el = document.getElementById("payment");
-          el?.scrollIntoView({ behavior: "smooth" });
+        href={plan.razorpayUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => {
+          // Also scroll to payment form so user can fill details first
           setTimeout(() => {
+            const el = document.getElementById("payment");
+            el?.scrollIntoView({ behavior: "smooth" });
             const sel = document.querySelector<HTMLSelectElement>("#payment-course-select");
             if (sel) sel.value = plan.code;
             sel?.dispatchEvent(new Event("change", { bubbles: true }));
-          }, 400);
+          }, 100);
         }}
         className={`mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold transition ${
           plan.popular

@@ -13,6 +13,12 @@ export async function GET() {
     const totalSales = purchases.reduce((s, p) => s + p.amount, 0);
     const totalStudents = purchases.length;
 
+    // Also count pending submissions (awaiting payment)
+    const allPurchases = await db.purchase.findMany({
+      select: { status: true, createdAt: true },
+    });
+    const pendingCount = allPurchases.filter((p) => p.status === "PENDING").length;
+
     const byCourse: Record<string, { count: number; revenue: number; label: string }> = {
       "1en": { count: 0, revenue: 0, label: "1st Year — Only English" },
       "1combo": { count: 0, revenue: 0, label: "1st Year — Combo" },
@@ -55,6 +61,7 @@ export async function GET() {
       totalStudents,
       todaySales,
       todayStudents: todayPurchases.length,
+      pendingCount,
       byCourse,
       last7Days,
     });

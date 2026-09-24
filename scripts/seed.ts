@@ -38,6 +38,7 @@ async function main() {
   await db.lead.deleteMany({});
 
   // Generate 30 demo purchases spread over last 7 days
+  // Mix of PAID (24) and PENDING (6) statuses
   const now = new Date();
   for (let i = 0; i < 30; i++) {
     const c = pick(COURSES);
@@ -49,6 +50,9 @@ async function main() {
     created.setDate(created.getDate() - ageDays);
     created.setHours(created.getHours() - ageHours);
 
+    // First 24 are PAID, last 6 are PENDING (recent submissions awaiting payment)
+    const status = i < 24 ? "PAID" : "PENDING";
+
     await db.purchase.create({
       data: {
         name: n,
@@ -58,7 +62,7 @@ async function main() {
         course: c.code,
         courseLabel: c.label,
         amount: c.amount,
-        status: "PAID",
+        status,
         createdAt: created,
       },
     });

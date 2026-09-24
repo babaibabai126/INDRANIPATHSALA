@@ -74,6 +74,8 @@ function seedDemoMem(store: { purchases: Purchase[]; leads: Lead[] }) {
     const created = new Date(now);
     created.setDate(created.getDate() - (i % 7));
     created.setHours(created.getHours() - (i % 24));
+    // First 24 = PAID, last 6 = PENDING (recent submissions awaiting payment)
+    const status = i < 24 ? "PAID" : "PENDING";
     store.purchases.push({
       id: `mem_p_${i}`,
       name: n,
@@ -83,7 +85,7 @@ function seedDemoMem(store: { purchases: Purchase[]; leads: Lead[] }) {
       course: c.code,
       courseLabel: c.label,
       amount: c.amount,
-      status: "PAID",
+      status,
       createdAt: created,
     });
   }

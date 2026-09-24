@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { Phone, LayoutDashboard } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Header() {
   return (
@@ -30,7 +29,6 @@ export function Header() {
         </a>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
           <a
             href="tel:+918293742022"
             className="hidden items-center gap-1.5 rounded-full border border-border px-3 py-2 text-xs font-medium text-foreground/90 transition hover:bg-muted/50 sm:inline-flex"
@@ -47,7 +45,7 @@ export function Header() {
             <span>Admin</span>
           </a>
           <a
-            href="#payment"
+            href="#pricing"
             className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-lg shadow-primary/20 transition hover:opacity-90 sm:px-5 sm:text-sm"
           >
             Buy Now

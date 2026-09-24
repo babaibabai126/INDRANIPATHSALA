@@ -10,19 +10,28 @@ import {
   Loader2,
   ShieldCheck,
   CheckCircle2,
+  Download,
+  Clock,
+  ExternalLink,
 } from "lucide-react";
 
 /**
- * Payment Details form — verbatim section header & info bullets from user.
- * New prices: ₹999 / ₹1499.
+ * Payment Details form — full flow:
+ *   1. User fills the form
+ *   2. We POST to /api/purchase -> saved as PENDING -> admin sees it
+ *   3. Show PAY button that opens the Razorpay link in new tab
+ *   4. After user returns (with ?paid=<id> in URL), we confirm payment
+ *   5. Once PAID, show PDF download button
  */
 
 const COURSES = [
-  { label: "1st Year — English Only — ₹999", value: "1en", amount: 999 },
-  { label: "1st Year — Combo (English+Bengali) — ₹1499", value: "1combo", amount: 1499 },
-  { label: "2nd Year — English Only — ₹999", value: "2en", amount: 999 },
-  { label: "2nd Year — Combo (English+Bengali) — ₹1499", value: "2combo", amount: 1499 },
+  { label: "1st Year — English Only — ₹999", value: "1en", amount: 999, razorpayUrl: "https://rzp.io/rzp/GtZpWok" },
+  { label: "1st Year — Combo (English+Bengali) — ₹1499", value: "1combo", amount: 1499, razorpayUrl: "https://rzp.io/rzp/mBBPn9cU" },
+  { label: "2nd Year — English Only — ₹999", value: "2en", amount: 999, razorpayUrl: "https://rzp.io/rzp/GtZpWok" },
+  { label: "2nd Year — Combo (English+Bengali) — ₹1499", value: "2combo", amount: 1499, razorpayUrl: "https://rzp.io/rzp/mBBPn9cU" },
 ];
+
+type FormState = "form" | "pending" | "paid";
 
 export function PaymentForm() {
   const [form, setForm] = useState({
@@ -33,11 +42,28 @@ export function PaymentForm() {
     course: "1en",
   });
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
+  const [state, setState] = useState<FormState>("form");
   const [error, setError] = useState<string | null>(null);
+  const [purchaseId, setPurchaseId] = useState<string | null>(null);
+  const [razorpayUrl, setRazorpayUrl] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
+  const selectedCourse = COURSES.find((c) => c.value === form.course);
+
+  // Handle return from Razorpay (?paid=<id> in URL)
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const paidId = params.get("paid");
+    if (paidId) {
+      setPurchaseId(paidId);
+      setState("pending");
+      setConfirming(true);
+      confirmPayment(paidId);
+      // Clean the URL
+      const cleanUrl = window.location.pathname + window.location.hash;
+      window.history.replaceState({}, "", cleanUrl);
+    }
     const applyHash = () => {
       const m = window.location.hash.match(/course=([a-z0-9]+)/);
       if (m && COURSES.some((c) => c.value === m[1])) {
@@ -49,7 +75,21 @@ export function PaymentForm() {
     return () => window.removeEventListener("hashchange", applyHash);
   }, []);
 
-  const selectedCourse = COURSES.find((c) => c.value === form.course);
+  const confirmPayment = async (id: string) => {
+    try {
+      const res = await fetch(`/api/purchase/confirm?id=${id}`, { method: "POST" });
+      if (!res.ok) throw new Error("Confirmation failed");
+      const data = await res.json();
+      if (data.ok && data.purchase?.status === "PAID") {
+        setState("paid");
+      }
+    } catch (err) {
+      console.error(err);
+      // Keep state as "pending" — user can retry
+    } finally {
+      setConfirming(false);
+    }
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,9 +103,14 @@ export function PaymentForm() {
       });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
-        throw new Error(j.error || "Payment failed");
+        throw new Error(j.error || "Submission failed");
       }
-      setDone(true);
+      const data = await res.json();
+      setPurchaseId(data.purchase.id);
+      setRazorpayUrl(data.razorpayUrl);
+      setState("pending");
+      // Auto-open Razorpay in new tab
+      window.open(data.razorpayUrl, "_blank", "noopener,noreferrer");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -93,7 +138,6 @@ export function PaymentForm() {
                   সম্পূর্ণ প্যাকেজ Payment-এর পর।
                 </p>
 
-                {/* Verbatim bullets from user */}
                 <ul className="mt-5 space-y-3 text-[12px] text-foreground/80">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-emerald-500" />
@@ -138,16 +182,168 @@ export function PaymentForm() {
               </div>
             </div>
 
-            {/* RIGHT — payment form */}
+            {/* RIGHT — payment form / pending / success */}
             <div className="p-6 sm:p-8 lg:col-span-3">
               <h3 className="text-xl font-bold text-foreground sm:text-2xl">
                 Payment Details
               </h3>
-              <p className="bn mt-1 text-[13px] text-muted-foreground">
-                নিচের ফর্মটি পূরণ করুন ও PAY বাটনে click করুন।
-              </p>
 
-              {done ? (
+              {/* STATE: form — initial state */}
+              {state === "form" && (
+                <>
+                  <p className="bn mt-1 text-[13px] text-muted-foreground">
+                    নিচের ফর্মটি পূরণ করুন ও PAY বাটনে click করুন।
+                  </p>
+                  <form onSubmit={submit} className="mt-6 space-y-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <Field
+                        icon={User}
+                        label="Name"
+                        labelBn="নাম"
+                        value={form.name}
+                        onChange={(v) => setForm({ ...form, name: v })}
+                        required
+                      />
+                      <Field
+                        icon={Phone}
+                        label="MOB No"
+                        labelBn="মোবাইল নম্বর"
+                        type="tel"
+                        value={form.mobile}
+                        onChange={(v) => setForm({ ...form, mobile: v })}
+                        required
+                      />
+                    </div>
+
+                    <Field
+                      icon={Mail}
+                      label="Email"
+                      labelBn="ইমেইল (নোটস এখানে পাবেন)"
+                      type="email"
+                      value={form.email}
+                      onChange={(v) => setForm({ ...form, email: v })}
+                      required
+                    />
+
+                    <Field
+                      icon={MapPin}
+                      label="Location"
+                      labelBn="ঠিকানা"
+                      value={form.location}
+                      onChange={(v) => setForm({ ...form, location: v })}
+                      required
+                    />
+
+                    <div>
+                      <label className="bn mb-1.5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        <CreditCard className="h-3 w-3" />
+                        Select Notes Plan
+                      </label>
+                      <select
+                        id="payment-course-select"
+                        value={form.course}
+                        onChange={(e) => setForm({ ...form, course: e.target.value })}
+                        className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/40"
+                      >
+                        {COURSES.map((c) => (
+                          <option key={c.value} value={c.value}>
+                            {c.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {error && (
+                      <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
+                        {error}
+                      </div>
+                    )}
+
+                    <div className="flex flex-col gap-3 rounded-xl border border-border bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          AMOUNT (UPI/VISA/RUPAY)
+                        </div>
+                        <div className="text-3xl font-extrabold text-foreground">
+                          ₹{selectedCourse?.amount.toLocaleString("en-IN")}
+                        </div>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="glow-amber flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent-orange px-7 py-3.5 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:brightness-110 disabled:opacity-60"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>PAY →</>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <ShieldCheck className="h-3 w-3 text-emerald-500" />
+                        100% Secure Payment
+                      </span>
+                      <span>·</span>
+                      <span>Razorpay Protected</span>
+                      <span>·</span>
+                      <span className="bn">All sales are final</span>
+                    </div>
+                  </form>
+                </>
+              )}
+
+              {/* STATE: pending — payment initiated, waiting for user to complete */}
+              {state === "pending" && (
+                <div className="mt-6 rounded-2xl border border-accent/30 bg-accent/10 p-6 text-center">
+                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-accent/20">
+                    <Clock className="h-7 w-7 text-accent" />
+                  </div>
+                  <div className="bn text-lg font-bold text-foreground">
+                    {confirming ? "Payment verify হচ্ছে..." : `${form.name}, Payment সম্পূর্ণ করুন`}
+                  </div>
+                  <p className="bn mt-1 text-[13px] text-muted-foreground">
+                    {confirming
+                      ? "আপনার Payment সফল হয়েছে কিনা যাচাই করা হচ্ছে, একটু অপেক্ষা করুন।"
+                      : "নতুন ট্যাবে Razorpay খোলা হয়েছে। Payment সম্পূর্ণ করে এই পেজে ফিরে আসুন — স্বয়ংক্রিয়ভাবে verify হবে।"}
+                  </p>
+                  <p className="bn mt-2 text-[11px] text-muted-foreground">
+                    আপনার Email: <span className="font-mono font-semibold">{form.email}</span>
+                  </p>
+
+                  {!confirming && (
+                    <>
+                      <a
+                        href={razorpayUrl || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:opacity-90"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        Razorpay-এ আবার খুলুন
+                      </a>
+                      <button
+                        onClick={() => purchaseId && confirmPayment(purchaseId)}
+                        className="mt-2 block w-full text-xs font-medium text-accent underline hover:no-underline"
+                      >
+                        Payment সম্পূর্ণ করেছি — Verify করুন
+                      </button>
+                    </>
+                  )}
+
+                  {confirming && (
+                    <Loader2 className="mx-auto mt-4 h-5 w-5 animate-spin text-accent" />
+                  )}
+                </div>
+              )}
+
+              {/* STATE: paid — success, download PDF */}
+              {state === "paid" && (
                 <div className="mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
                   <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20">
                     <CheckCircle2 className="h-7 w-7 text-emerald-500" />
@@ -156,128 +352,37 @@ export function PaymentForm() {
                     ধন্যবাদ {form.name}!
                   </div>
                   <div className="bn mt-1 text-[13px] text-foreground/80">
-                    আপনার Payment সফল হয়েছে। আপনার Email ({form.email}) চেক করুন। PDF Download link সাথে সাথে পৌঁছে গেছে।
+                    আপনার Payment সফল হয়েছে। আপনার কোর্সের PDF ডাউনলোড করুন:
                   </div>
-                  <button
-                    onClick={() => {
-                      setDone(false);
-                      setForm({
-                        name: "",
-                        email: "",
-                        mobile: "",
-                        location: "",
-                        course: "1en",
-                      });
-                    }}
-                    className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted/50"
-                  >
-                    New Payment
-                  </button>
+
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        alert("PDF Download লিংক আপনার Email-এ পাঠানো হয়েছে।");
+                      }}
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2 text-xs font-bold text-primary-foreground hover:opacity-90"
+                    >
+                      <Download className="h-4 w-4" />
+                      ডাউনলোড করুন (PDF)
+                    </a>
+                    <a
+                      href={`mailto:${form.email}`}
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-5 py-2 text-xs font-semibold text-foreground hover:bg-muted/50"
+                    >
+                      <Mail className="h-4 w-4" />
+                      ইমেইল চেক করুন
+                    </a>
+                  </div>
+
+                  <p className="bn mt-4 text-[11px] text-muted-foreground">
+                    আপনার কেনাকাটার জন্য ধন্যবাদ। যেকোনো সমস্যায় আমাদের কল করুন: <span className="font-mono font-semibold">8293742022</span>
+                  </p>
                 </div>
-              ) : (
-                <form onSubmit={submit} className="mt-6 space-y-4">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field
-                      icon={User}
-                      label="Name"
-                      labelBn="নাম"
-                      value={form.name}
-                      onChange={(v) => setForm({ ...form, name: v })}
-                      required
-                    />
-                    <Field
-                      icon={Phone}
-                      label="MOB No"
-                      labelBn="মোবাইল নম্বর"
-                      type="tel"
-                      value={form.mobile}
-                      onChange={(v) => setForm({ ...form, mobile: v })}
-                      required
-                    />
-                  </div>
-
-                  <Field
-                    icon={Mail}
-                    label="Email"
-                    labelBn="ইমেইল (নোটস এখানে পাবেন)"
-                    type="email"
-                    value={form.email}
-                    onChange={(v) => setForm({ ...form, email: v })}
-                    required
-                  />
-
-                  <Field
-                    icon={MapPin}
-                    label="Location"
-                    labelBn="ঠিকানা"
-                    value={form.location}
-                    onChange={(v) => setForm({ ...form, location: v })}
-                    required
-                  />
-
-                  <div>
-                    <label className="bn mb-1.5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      <CreditCard className="h-3 w-3" />
-                      Select Notes Plan
-                    </label>
-                    <select
-                      id="payment-course-select"
-                      value={form.course}
-                      onChange={(e) => setForm({ ...form, course: e.target.value })}
-                      className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/40"
-                    >
-                      {COURSES.map((c) => (
-                        <option key={c.value} value={c.value}>
-                          {c.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {error && (
-                    <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
-                      {error}
-                    </div>
-                  )}
-
-                  <div className="flex flex-col gap-3 rounded-xl border border-border bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                        AMOUNT (UPI/VISA/RUPAY)
-                      </div>
-                      <div className="text-3xl font-extrabold text-foreground">
-                        ₹{selectedCourse?.amount.toLocaleString("en-IN")}
-                      </div>
-                    </div>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="glow-amber flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent-orange px-7 py-3.5 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:brightness-110 disabled:opacity-60"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        <>PAY →</>
-                      )}
-                    </button>
-                  </div>
-
-                  <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <ShieldCheck className="h-3 w-3 text-emerald-500" />
-                      100% Secure Payment
-                    </span>
-                    <span>·</span>
-                    <span>Razorpay Protected</span>
-                    <span>·</span>
-                    <span className="bn">All sales are final</span>
-                  </div>
-                </form>
               )}
 
+              {/* Terms — always visible */}
               <div className="mt-6 rounded-xl border border-border bg-muted/30 p-3 text-[11px] text-muted-foreground">
                 <span className="font-semibold text-foreground">Terms and Conditions:</span>{" "}
                 <span className="bn">

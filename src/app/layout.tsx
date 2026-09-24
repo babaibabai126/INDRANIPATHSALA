@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Noto_Sans_Bengali, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from "@/components/theme-provider";
 
 const notoBengali = Noto_Sans_Bengali({
   variable: "--font-bengali",
@@ -49,12 +48,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Light theme only — no ThemeProvider needed.
   return (
     <html lang="bn" suppressHydrationWarning>
       <body
         className={`${notoBengali.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        {children}
         <Toaster />
       </body>
     </html>

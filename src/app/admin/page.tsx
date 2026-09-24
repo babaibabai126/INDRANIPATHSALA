@@ -17,12 +17,10 @@ import {
   Trash2,
   Download,
   ArrowLeft,
-  Sun,
-  Moon,
   CreditCard,
   Clock,
+  CheckCircle2,
 } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 type Purchase = {
   id: string;
@@ -42,6 +40,7 @@ type Stats = {
   totalStudents: number;
   todaySales: number;
   todayStudents: number;
+  pendingCount?: number;
   byCourse: Record<string, { count: number; revenue: number; label: string }>;
   last7Days: { date: string; sales: number; count: number }[];
 };
@@ -156,7 +155,6 @@ export default function AdminPage() {
             >
               <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
             </button>
-            <ThemeToggle />
             <Link
               href="/"
               className="hidden items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-bold text-primary-foreground transition hover:opacity-90 sm:inline-flex"
@@ -177,7 +175,7 @@ export default function AdminPage() {
         </div>
 
         {/* Stats cards */}
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
           <StatCard
             icon={IndianRupee}
             label="Total Sales"
@@ -205,6 +203,13 @@ export default function AdminPage() {
             value={stats && stats.totalStudents > 0 ? fmtINR(Math.round(stats.totalSales / stats.totalStudents)) : "—"}
             sub="per student"
             color="#a855f7"
+          />
+          <StatCard
+            icon={Clock}
+            label="Pending Payments"
+            value={stats ? String(stats.pendingCount ?? 0) : "—"}
+            sub="awaiting payment"
+            color="#f59e0b"
           />
         </div>
 
@@ -314,6 +319,7 @@ export default function AdminPage() {
                   <th className="px-4 py-3 font-semibold">Contact</th>
                   <th className="px-4 py-3 font-semibold">Course</th>
                   <th className="px-4 py-3 font-semibold">Amount</th>
+                  <th className="px-4 py-3 font-semibold">Status</th>
                   <th className="px-4 py-3 font-semibold">Date</th>
                   <th className="px-4 py-3 font-semibold text-right">Actions</th>
                 </tr>
@@ -321,7 +327,7 @@ export default function AdminPage() {
               <tbody className="divide-y divide-border">
                 {loading && (
                   <tr>
-                    <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
+                    <td colSpan={8} className="px-4 py-12 text-center text-muted-foreground">
                       <RefreshCw className="mx-auto mb-3 h-5 w-5 animate-spin" />
                       Loading purchases...
                     </td>
@@ -329,7 +335,7 @@ export default function AdminPage() {
                 )}
                 {!loading && purchases.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
+                    <td colSpan={8} className="px-4 py-12 text-center text-muted-foreground">
                       No purchases found. Try adjusting filters.
                     </td>
                   </tr>
@@ -364,6 +370,17 @@ export default function AdminPage() {
                       </td>
                       <td className="px-4 py-3 font-mono font-semibold text-emerald-600 dark:text-emerald-400">
                         {fmtINR(p.amount)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-bold ${
+                          p.status === "PAID"
+                            ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                            : p.status === "PENDING"
+                            ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                            : "bg-destructive/15 text-destructive"
+                        }`}>
+                          ● {p.status}
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-[11px] text-muted-foreground">
                         {fmtDate(p.createdAt)}
@@ -436,10 +453,38 @@ export default function AdminPage() {
               <DetailRow icon={Clock} label="Payment Date" value={fmtDate(selected.createdAt)} />
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Status</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2 py-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[10px] font-bold ${
+                  selected.status === "PAID"
+                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                    : selected.status === "PENDING"
+                    ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                    : "bg-destructive/15 text-destructive"
+                }`}>
                   ● {selected.status}
                 </span>
               </div>
+
+              {/* Admin action: mark as PAID (for PENDING entries) */}
+              {selected.status === "PENDING" && (
+                <button
+                  onClick={async () => {
+                    try {
+                      const res = await fetch(`/api/purchase/confirm?id=${selected.id}`, { method: "POST" });
+                      if (res.ok) {
+                        const data = await res.json();
+                        setSelected((s) => s ? { ...s, status: "PAID" } : s);
+                        refresh();
+                      }
+                    } catch (e) {
+                      console.error(e);
+                    }
+                  }}
+                  className="bn mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-emerald-600/30 hover:bg-emerald-700"
+                >
+                  <CheckCircle2 className="h-4 w-4" />
+                  Payment কনফার্ম করুন (Mark as PAID)
+                </button>
+              )}
             </div>
 
             <div className="mt-5 flex gap-2">

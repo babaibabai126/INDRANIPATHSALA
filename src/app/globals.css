@@ -43,77 +43,13 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* DARK theme — warm charcoal (NOT blue) */
-:root,
-.dark {
-  --radius: 0.75rem;
-
-  --background: #181410;          /* warm dark charcoal */
-  --foreground: #f5ebd7;          /* warm cream text */
-
-  --card: #221d17;                /* warm card */
-  --card-foreground: #f5ebd7;
-  --popover: #221d17;
-  --popover-foreground: #f5ebd7;
-
-  --primary: #c8901f;              /* amber/gold CTA */
-  --primary-foreground: #1a1209;
-
-  --secondary: #2c2620;
-  --secondary-foreground: #f5ebd7;
-
-  --muted: #2c2620;
-  --muted-foreground: #b8a989;
-
-  --accent: #f5c451;               /* yellow accent */
-  --accent-foreground: #1a1209;
-
-  --destructive: #e76f51;
-  --border: rgba(245, 235, 215, 0.10);
-  --input: rgba(245, 235, 215, 0.10);
-  --ring: #c8901f;
-
-  --accent-orange: #f08a3e;
-  --accent-yellow: #f5c451;
-  --accent-blue: #5b8def;
-  --accent-purple: #b27ddb;
-  --accent-teal: #4ec9b0;
-  --accent-red: #e76f51;
-
-  --chart-1: #f08a3e;
-  --chart-2: #f5c451;
-  --chart-3: #5b8def;
-  --chart-4: #b27ddb;
-  --chart-5: #4ec9b0;
-
-  --sidebar: #221d17;
-  --sidebar-foreground: #f5ebd7;
-  --sidebar-primary: #c8901f;
-  --sidebar-primary-foreground: #1a1209;
-  --sidebar-accent: #2c2620;
-  --sidebar-accent-foreground: #f5ebd7;
-  --sidebar-border: rgba(245, 235, 215, 0.10);
-  --sidebar-ring: #c8901f;
-
-  --glow-1: rgba(200, 144, 31, 0.14);
-  --glow-2: rgba(178, 125, 219, 0.08);
-
-  /* Elevated surface: solid cream card on dark background
-     for maximum Bengali text readability in dark mode. */
-  --surface-elevated: #faf4e6;
-  --surface-elevated-foreground: #1a1209;
-  --surface-elevated-muted: #efe2c4;
-  --surface-elevated-accent: #c8901f;
-  --surface-elevated-muted-foreground: #6b5c3f;
-  --surface-elevated-border: rgba(26, 18, 9, 0.10);
-}
-
-/* LIGHT theme — warm cream */
-.light {
+/* SINGLE light theme — cream background, dark brown text, amber CTA.
+   (Dark mode removed per user request.) */
+:root {
   --radius: 0.75rem;
 
   --background: #faf6ec;           /* warm cream */
-  --foreground: #2a1f10;           /* dark brown */
+  --foreground: #2a1f10;           /* dark brown text — high contrast */
 
   --card: #ffffff;
   --card-foreground: #2a1f10;
@@ -121,7 +57,7 @@
   --popover-foreground: #2a1f10;
 
   --primary: #c8901f;              /* amber CTA */
-  --primary-foreground: #1a1209;
+  --primary-foreground: #ffffff;   /* white text on amber — better contrast */
 
   --secondary: #f3ecd9;
   --secondary-foreground: #2a1f10;
@@ -129,8 +65,8 @@
   --muted: #f3ecd9;
   --muted-foreground: #6b5c3f;
 
-  --accent: #f5c451;
-  --accent-foreground: #1a1209;
+  --accent: #b8740a;               /* darker amber for text accents (WCAG AA on cream) */
+  --accent-foreground: #ffffff;
 
   --destructive: #c1452d;
   --border: rgba(42, 31, 16, 0.12);
@@ -153,7 +89,7 @@
   --sidebar: #ffffff;
   --sidebar-foreground: #2a1f10;
   --sidebar-primary: #c8901f;
-  --sidebar-primary-foreground: #1a1209;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f3ecd9;
   --sidebar-accent-foreground: #2a1f10;
   --sidebar-border: rgba(42, 31, 16, 0.10);
@@ -163,13 +99,18 @@
   --glow-2: rgba(139, 53, 212, 0.05);
 
   /* Elevated surface: solid white card on cream background
-     for maximum Bengali text readability in light mode. */
+     for maximum Bengali text readability. */
   --surface-elevated: #ffffff;
   --surface-elevated-foreground: #2a1f10;
   --surface-elevated-muted: #f3ecd9;
-  --surface-elevated-accent: #c8901f;
+  --surface-elevated-accent: #b8740a;
   --surface-elevated-muted-foreground: #6b5c3f;
   --surface-elevated-border: rgba(42, 31, 16, 0.10);
+}
+
+/* Backwards-compat alias for dark mode (no-op, just inherits root) */
+.dark {
+  /* Same as :root — dark mode removed */
 }
 
 @layer base {
@@ -181,7 +122,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Subtle warm glow instead of blue */
     background-image:
       radial-gradient(circle at 15% 20%, var(--glow-1) 0%, transparent 35%),
       radial-gradient(circle at 85% 60%, var(--glow-2) 0%, transparent 35%);
@@ -217,10 +157,10 @@
     linear-gradient(var(--border) 1px, transparent 1px),
     linear-gradient(90deg, var(--border) 1px, transparent 1px);
   background-size: 50px 50px;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
-/* Glow ring for CTAs (amber, no blue) */
+/* Glow ring for CTAs (amber) */
 .glow-amber {
   box-shadow: 0 0 0 0 rgba(200, 144, 31, 0.45);
   animation: pulse-amber 2.4s ease-in-out infinite;
