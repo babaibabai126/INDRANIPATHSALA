@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 
+// New prices (per user spec):
+//   1st Year — English Only: ₹999
+//   1st Year — Combo: ₹1499
+//   2nd Year — English Only: ₹999
+//   2nd Year — Combo: ₹1499
 const COURSES: Record<string, { label: string; amount: number }> = {
-  "1en": { label: "1st Year — Only English", amount: 1399 },
-  "1combo": { label: "1st Year — English + Bengali (Combo)", amount: 1899 },
-  "2en": { label: "2nd Year — Only English", amount: 1499 },
-  "2combo": { label: "2nd Year — English + Bengali (Combo)", amount: 1999 },
+  "1en": { label: "1st Year — Only English", amount: 999 },
+  "1combo": { label: "1st Year — English + Bengali (Combo)", amount: 1499 },
+  "2en": { label: "2nd Year — Only English", amount: 999 },
+  "2combo": { label: "2nd Year — English + Bengali (Combo)", amount: 1499 },
 };
 
 // POST /api/purchase — creates a new purchase (paid)

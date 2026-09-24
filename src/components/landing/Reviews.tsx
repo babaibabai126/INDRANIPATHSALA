@@ -2,6 +2,12 @@
 
 import { Star, Quote, ExternalLink } from "lucide-react";
 
+/**
+ * Our Students Review — verbatim section header from user.
+ * "(আমাদের ইন্দ্রাণী পাঠশালা র GOOGLE REVIEW LINK ADD হবে)"
+ * "(এখানে Review- গুলো থাকবে)"
+ */
+
 const REVIEWS = [
   {
     name: "Rohit Kumar",
@@ -10,7 +16,7 @@ const REVIEWS = [
     course: "D.Pharm 2nd Year",
     text:
       "এই নোটস আমার জন্য গেম-চেঞ্জার। বাংলা translation সহ থাকায় বুঝতে সুবিধা হয়েছে। Exit Exam-এ 80+ পেয়েছি।",
-    color: "#F97316",
+    color: "#f08a3e",
   },
   {
     name: "Sourav Das",
@@ -19,7 +25,7 @@ const REVIEWS = [
     course: "D.Pharm 1st Year",
     text:
       "Chapter-wise summary খুবই কাজে দিয়েছে। পরীক্ষার আগের রাতে শুধু রিভিশন করেছি, ফলাফল দাঁড়িয়েছে First Class।",
-    color: "#3B82F6",
+    color: "#5b8def",
   },
   {
     name: "Priya Saha",
@@ -28,7 +34,7 @@ const REVIEWS = [
     course: "D.Pharm 2nd Year",
     text:
       "গ্রামীণ এলাকা থেকে পড়ি। ইংরেজি বুঝতে সমস্যা হত। বাংলা সাপোর্ট থাকায় অনেক সাহায্য পেয়েছি।",
-    color: "#A855F7",
+    color: "#b27ddb",
   },
   {
     name: "Anik Mallick",
@@ -37,7 +43,7 @@ const REVIEWS = [
     course: "Both Years (Combo)",
     text:
       "Combo কিনেছিলাম। দুই বছরেরই প্রস্তুতি একসাথে পেয়েছি। ভালো র‍্যাঙ্ক করেছি বলে মনে হচ্ছে।",
-    color: "#FACC15",
+    color: "#f5c451",
   },
   {
     name: "Tania Roy",
@@ -46,7 +52,7 @@ const REVIEWS = [
     course: "D.Pharm 1st Year",
     text:
       "VVI MCQ ও SAQ গুলো সরাসরি পরীক্ষায় এসেছিল। সবাইকে সাজেস্ট করব।",
-    color: "#2DD4BF",
+    color: "#4ec9b0",
   },
   {
     name: "Subham Ghosh",
@@ -55,7 +61,7 @@ const REVIEWS = [
     course: "D.Pharm 2nd Year",
     text:
       "Razorpay-এ payment সিকিউর এবং ইমেইলে সাথে সাথে PDF এসে গেছে। সার্ভিস দারুণ।",
-    color: "#EF4444",
+    color: "#e76f51",
   },
 ];
 
@@ -69,13 +75,13 @@ export function Reviews() {
             <span>Our Students Review</span>
           </div>
           <h2 className="bn mt-4 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
-            আমাদের ইন্দ্রানী পাঠশালার{" "}
+            আমাদের ইন্দ্রাণী পাঠশালা র{" "}
             <span className="bg-gradient-to-r from-accent to-accent-orange bg-clip-text text-transparent">
-              ছাত্র-ছাত্রীদের রিভিউ
+              GOOGLE REVIEW LINK ADD হবে
             </span>
           </h2>
           <p className="bn mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            আমাদের ইন্দ্রানী পাঠশালার ছাত্র-ছাত্রীদের রিভিউ — নিচে দেখুন।
+            (এখানে Review- গুলো থাকবে)
           </p>
           <div className="mt-4 flex items-center justify-center gap-3">
             <div className="flex gap-0.5">
@@ -121,7 +127,6 @@ export function Reviews() {
           ))}
         </div>
 
-        {/* Google review link */}
         <div className="mt-8 text-center">
           <a
             href="https://www.google.com/search?q=Indrani+Pathsala+reviews"
@@ -130,7 +135,7 @@ export function Reviews() {
             className="bn inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2 text-xs font-semibold text-foreground transition hover:bg-muted/50"
           >
             <Star className="h-3.5 w-3.5 fill-accent text-accent" />
-            GOOGLE REVIEW LINK — সব Google Review দেখুন
+            সব Google Review দেখুন
             <ExternalLink className="h-3 w-3" />
           </a>
         </div>

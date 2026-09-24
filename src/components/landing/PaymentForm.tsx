@@ -12,11 +12,16 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
+/**
+ * Payment Details form — verbatim section header & info bullets from user.
+ * New prices: ₹999 / ₹1499.
+ */
+
 const COURSES = [
-  { label: "1st Year — English Only — ₹1399", value: "1en", amount: 1399 },
-  { label: "1st Year — Combo (English+Bengali) — ₹1899", value: "1combo", amount: 1899 },
-  { label: "2nd Year — English Only — ₹1499", value: "2en", amount: 1499 },
-  { label: "2nd Year — Combo (English+Bengali) — ₹1999", value: "2combo", amount: 1999 },
+  { label: "1st Year — English Only — ₹999", value: "1en", amount: 999 },
+  { label: "1st Year — Combo (English+Bengali) — ₹1499", value: "1combo", amount: 1499 },
+  { label: "2nd Year — English Only — ₹999", value: "2en", amount: 999 },
+  { label: "2nd Year — Combo (English+Bengali) — ₹1499", value: "2combo", amount: 1499 },
 ];
 
 export function PaymentForm() {
@@ -31,7 +36,6 @@ export function PaymentForm() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // allow pricing cards to set course via URL hash
   useEffect(() => {
     if (typeof window === "undefined") return;
     const applyHash = () => {
@@ -71,8 +75,6 @@ export function PaymentForm() {
 
   return (
     <section id="payment" className="relative py-16 sm:py-20">
-      <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-72 w-[600px] rounded-full bg-primary/10 blur-3xl" />
-
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6">
         <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-2xl shadow-primary/10">
           <div className="grid gap-0 lg:grid-cols-5">
@@ -84,21 +86,22 @@ export function PaymentForm() {
                   <CreditCard className="h-3.5 w-3.5" />
                   PAYMENT DETAILS
                 </div>
-                <h2 className="mt-4 text-2xl font-bold leading-tight text-foreground">
-                  D.PHARM 1st / 2nd Year Premium Suggestive
+                <h2 className="mt-4 text-xl font-bold leading-tight text-foreground sm:text-2xl">
+                  D.PHARM 1st/2nd year Premium Suggestive Notes
                 </h2>
                 <p className="bn mt-2 text-[13px] leading-relaxed text-foreground/80">
-                  <span className="font-semibold">Notes সম্পূর্ণ পাবেন Payment-এর পর।</span>
+                  সম্পূর্ণ প্যাকেজ Payment-এর পর।
                 </p>
 
+                {/* Verbatim bullets from user */}
                 <ul className="mt-5 space-y-3 text-[12px] text-foreground/80">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-emerald-500" />
-                    <span className="bn">0% Preparation সহ Hero Result আপনার হাতে।</span>
+                    <span className="bn">0% Preparation থেকে Hero Result আপনার হাতে।</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-emerald-500" />
-                    <span className="bn">Payment করার পর back বোতাম টাপবেন না।</span>
+                    <span className="bn">Payment করার পর back বোতাম টিপবেন না।</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-emerald-500" />
@@ -124,11 +127,11 @@ export function PaymentForm() {
                       MOB-8293742022
                     </a>
                     <a
-                      href="mailto:indranipathsala2026@gmail.com"
+                      href="mailto:indraniPathsala2026@gmail.com"
                       className="inline-flex items-center gap-1.5 break-all"
                     >
                       <Mail className="h-3 w-3 text-primary" />
-                      <span className="text-[11px]">indranipathsala2026@gmail.com</span>
+                      <span className="text-[11px]">indraniPathsala2026@gmail.com</span>
                     </a>
                   </div>
                 </div>
@@ -245,14 +248,11 @@ export function PaymentForm() {
                       <div className="text-3xl font-extrabold text-foreground">
                         ₹{selectedCourse?.amount.toLocaleString("en-IN")}
                       </div>
-                      <div className="bn text-[11px] text-muted-foreground">
-                        incl. GST · instant email delivery
-                      </div>
                     </div>
                     <button
                       type="submit"
                       disabled={loading}
-                      className="glow-blue flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent-blue px-7 py-3.5 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:brightness-110 disabled:opacity-60"
+                      className="glow-amber flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent-orange px-7 py-3.5 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:brightness-110 disabled:opacity-60"
                     >
                       {loading ? (
                         <>

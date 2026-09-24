@@ -23,8 +23,8 @@ export function Header() {
             <div className="text-base font-bold tracking-tight text-foreground sm:text-lg">
               Indrani Pathsala
             </div>
-            <div className="bn text-[10px] text-yellow-500 sm:text-xs">
-              ইন্দ্রানী পাঠশালা · D.Pharm Premium Notes
+            <div className="bn text-[10px] text-accent sm:text-xs">
+              ইন্দ্রাণী পাঠশালা · D.Pharm Premium Notes
             </div>
           </div>
         </a>

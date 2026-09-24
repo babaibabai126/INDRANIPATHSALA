@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { FileText, Eye, Download, CheckCircle2 } from "lucide-react";
 
+/**
+ * Sample Notes section — verbatim text from user's message.
+ * PDF used only for placement reference.
+ */
+
 export function SampleNotes() {
   const [year, setYear] = useState<"1st" | "2nd">("1st");
 
@@ -10,17 +15,9 @@ export function SampleNotes() {
     <section id="sample" className="relative py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
-            <FileText className="h-3.5 w-3.5" />
-            <span>Sample Notes</span>
-          </div>
-          <h2 className="bn mt-4 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
-            নোটস পছন্দ হবে কি না{" "}
-            <span className="text-accent">আগেই দেখে নিন</span>
+          <h2 className="bn text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
+            Sample Notes
           </h2>
-          <p className="bn mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            সম্পূর্ণ নোটস কেনার আগে একটি Free Sample PDF ডাউনলোড করে দেখে নিন।
-          </p>
         </div>
 
         {/* year toggle */}
@@ -33,7 +30,7 @@ export function SampleNotes() {
                 : "border border-border bg-card text-foreground hover:bg-muted/50"
             }`}
           >
-            1st Year - view sample
+            1st year – view sample
           </button>
           <button
             onClick={() => setYear("2nd")}
@@ -43,7 +40,7 @@ export function SampleNotes() {
                 : "border border-border bg-card text-foreground hover:bg-muted/50"
             }`}
           >
-            2nd Year - view sample
+            2nd year – view sample
           </button>
         </div>
 

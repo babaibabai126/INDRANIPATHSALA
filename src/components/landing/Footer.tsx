@@ -16,7 +16,7 @@ export function Footer() {
               </div>
               <div>
                 <div className="text-base font-bold text-foreground">Indrani Pathsala</div>
-                <div className="bn text-[10px] text-accent">ইন্দ্রানী পাঠশালা</div>
+                <div className="bn text-[10px] text-accent">ইন্দ্রাণী পাঠশালা</div>
               </div>
             </div>
             <p className="bn mt-3 text-[12px] leading-relaxed text-muted-foreground">
@@ -30,7 +30,7 @@ export function Footer() {
             <div className="text-sm font-bold uppercase tracking-wider text-foreground">Quick Links</div>
             <ul className="mt-3 space-y-2 text-[13px] text-muted-foreground">
               <li><a href="#top" className="bn transition hover:text-foreground">Home</a></li>
-              <li><a href="#notes" className="bn transition hover:text-foreground">নোটস-এ কী কী আছে</a></li>
+              <li><a href="#notes-features" className="bn transition hover:text-foreground">নোটস-এ কী আছে</a></li>
               <li><a href="#pricing" className="bn transition hover:text-foreground">Buy Notes</a></li>
               <li><a href="#payment" className="bn transition hover:text-foreground">Payment</a></li>
               <li><a href="#sample" className="bn transition hover:text-foreground">Sample Notes</a></li>
@@ -49,11 +49,11 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:indranipathsala2026@gmail.com"
+                  href="mailto:indraniPathsala2026@gmail.com"
                   className="flex items-start gap-2.5 transition hover:text-foreground"
                 >
                   <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
-                  <span className="break-all">indranipathsala2026@gmail.com</span>
+                  <span className="break-all">indraniPathsala2026@gmail.com</span>
                 </a>
               </li>
               <li className="flex items-start gap-2.5">
@@ -69,7 +69,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2.5">
                 <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent" />
-                <span className="bn">24×7 Support (কল ও WhatsApp)</span>
+                <span className="bn">24×7 Support (Call ও WhatsApp)</span>
               </li>
             </ul>
           </div>
@@ -93,7 +93,7 @@ export function Footer() {
             </div>
             <div className="mt-3 rounded-lg border border-border bg-muted/30 p-2.5 text-[10px] text-muted-foreground">
               <span className="font-semibold text-foreground">Terms:</span>{" "}
-              <span className="bn">All sales are final once digital product is dispatched to email.</span>
+              <span className="bn">All sales are Final once digital product is dispatched to email.</span>
             </div>
           </div>
         </div>

@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import { Phone, MessageCircle, ArrowUp } from "lucide-react";
 
+/**
+ * Floating WhatsApp + Call buttons — per user spec:
+ * "Call and Whatsapp logo floating থাকবে"
+ */
+
 export function FloatingButtons() {
   const [showTop, setShowTop] = useState(false);
   const [showBuy, setShowBuy] = useState(false);
@@ -20,7 +25,6 @@ export function FloatingButtons() {
 
   return (
     <>
-      {/* Bottom-right floating action stack: Back-to-top + WhatsApp + Call */}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-3 sm:bottom-6 sm:right-6">
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -63,9 +67,9 @@ export function FloatingButtons() {
         <div className="mx-auto max-w-7xl px-4 pb-3 sm:pb-4">
           <a
             href="#payment"
-            className="glow-blue flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent-blue px-6 py-3 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:brightness-110 sm:mx-auto sm:inline-flex"
+            className="glow-amber flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent-orange px-6 py-3 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:brightness-110 sm:mx-auto sm:inline-flex"
           >
-            <span className="bn">এখনই কিনুন</span> — ₹1,399 থেকে শুরু →
+            <span className="bn">এখনই কিনুন</span> — ₹999 থেকে শুরু →
           </a>
         </div>
       </div>

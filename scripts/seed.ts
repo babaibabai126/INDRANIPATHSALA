@@ -4,10 +4,10 @@ import { PrismaClient } from "@prisma/client";
 const db = new PrismaClient();
 
 const COURSES = [
-  { code: "1en", label: "1st Year — Only English", amount: 1399 },
-  { code: "1combo", label: "1st Year — English + Bengali (Combo)", amount: 1899 },
-  { code: "2en", label: "2nd Year — Only English", amount: 1499 },
-  { code: "2combo", label: "2nd Year — English + Bengali (Combo)", amount: 1999 },
+  { code: "1en", label: "1st Year — Only English", amount: 999 },
+  { code: "1combo", label: "1st Year — English + Bengali (Combo)", amount: 1499 },
+  { code: "2en", label: "2nd Year — Only English", amount: 999 },
+  { code: "2combo", label: "2nd Year — English + Bengali (Combo)", amount: 1499 },
 ];
 
 const NAMES = [

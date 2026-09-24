@@ -2,6 +2,15 @@
 
 import { CheckCircle2, Crown, Zap, Languages } from "lucide-react";
 
+/**
+ * BUY NOW — verbatim text from user.
+ * NEW PRICES (per user spec):
+ *   1st Year — English Only: ₹999
+ *   1st Year — English + Bengali (Combo): ₹1499
+ *   2nd Year — English Only: ₹999
+ *   2nd Year — English + Bengali (Combo): ₹1499
+ */
+
 type Plan = {
   badge: string;
   badgeColor: string;
@@ -18,12 +27,12 @@ type Plan = {
 const PLANS: Plan[] = [
   {
     badge: "1st Year",
-    badgeColor: "#3B82F6",
+    badgeColor: "#5b8def",
     year: "1st Year",
     title: "Only English Version",
     titleBn: "শুধু English Version",
-    price: 1399,
-    originalPrice: 1999,
+    price: 999,
+    originalPrice: 1499,
     code: "1en",
     features: [
       { en: "Complete PCI ER-2020 Syllabus", bn: "সম্পূর্ণ PCI ER-2020 সিলেবাস" },
@@ -35,12 +44,12 @@ const PLANS: Plan[] = [
   },
   {
     badge: "1st Year · COMBO",
-    badgeColor: "#FACC15",
+    badgeColor: "#f5c451",
     year: "1st Year",
-    title: "English + Bengali Translation",
+    title: "English + Bengali Translation (Combo)",
     titleBn: "English + বাংলা Translation (Combo)",
-    price: 1899,
-    originalPrice: 2499,
+    price: 1499,
+    originalPrice: 1999,
     popular: true,
     code: "1combo",
     features: [
@@ -53,12 +62,12 @@ const PLANS: Plan[] = [
   },
   {
     badge: "2nd Year",
-    badgeColor: "#A855F7",
+    badgeColor: "#b27ddb",
     year: "2nd Year",
     title: "Only English Version",
     titleBn: "শুধু English Version",
-    price: 1499,
-    originalPrice: 2199,
+    price: 999,
+    originalPrice: 1499,
     code: "2en",
     features: [
       { en: "Complete PCI ER-2020 Syllabus", bn: "সম্পূর্ণ PCI ER-2020 সিলেবাস" },
@@ -70,12 +79,12 @@ const PLANS: Plan[] = [
   },
   {
     badge: "2nd Year · COMBO",
-    badgeColor: "#F97316",
+    badgeColor: "#f08a3e",
     year: "2nd Year",
-    title: "English + Bengali Translation",
+    title: "English + Bengali Translation (Combo)",
     titleBn: "English + বাংলা Translation (Combo)",
-    price: 1999,
-    originalPrice: 2799,
+    price: 1499,
+    originalPrice: 1999,
     code: "2combo",
     features: [
       { en: "Everything in English Version", bn: "English Version-এর সব সুবিধা" },
@@ -90,9 +99,7 @@ const PLANS: Plan[] = [
 export function Pricing() {
   return (
     <section id="pricing" className="relative py-16 sm:py-20">
-      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl" />
-
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
             <Crown className="h-3.5 w-3.5" />
@@ -104,17 +111,13 @@ export function Pricing() {
               Premium Suggestive Notes
             </span>
           </h2>
-          <p className="bn mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            Payment সম্পূর্ণ হওয়ার সাথে সাথেই আপনার Email-এ PDF Download link চলে যাবে।
-          </p>
         </div>
 
-        {/* Year group dividers */}
         <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* 1st Year group */}
           <div>
             <div className="mb-3 flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">
+              <span className="bn inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">
                 1st Year Premium Suggestive Notes
               </span>
             </div>
@@ -128,7 +131,7 @@ export function Pricing() {
           {/* 2nd Year group */}
           <div>
             <div className="mb-3 flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-purple/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-accent-purple">
+              <span className="bn inline-flex items-center gap-1.5 rounded-full bg-accent-purple/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-accent-purple">
                 2nd Year Premium Suggestive Notes
               </span>
             </div>
@@ -215,7 +218,6 @@ function PlanCard({ plan }: { plan: Plan }) {
           e.preventDefault();
           const el = document.getElementById("payment");
           el?.scrollIntoView({ behavior: "smooth" });
-          // Try to set the dropdown
           setTimeout(() => {
             const sel = document.querySelector<HTMLSelectElement>("#payment-course-select");
             if (sel) sel.value = plan.code;

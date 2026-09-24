@@ -25,7 +25,7 @@ export function AlertBar() {
   const seconds = Math.floor((diff % 60000) / 1000);
 
   return (
-    <div className="w-full bg-gradient-to-r from-[#FF4500] via-[#ff5722] to-[#FF4500] text-white">
+    <div className="w-full bg-gradient-to-r from-[#c8901f] via-[#f08a3e] to-[#c8901f] text-white">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 py-2 text-center text-[12px] font-semibold sm:text-sm">
         <span className="inline-flex items-center gap-2">
           <span className="relative flex h-2.5 w-2.5">
