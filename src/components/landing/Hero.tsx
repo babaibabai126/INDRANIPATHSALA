@@ -1,13 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { ShieldCheck, ChevronRight } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 /**
- * Hero — EXACT verbatim text from user.
- * - Solid dark heading text (no gradient — was unreadable)
- * - Image on side (right) with text on left for desktop
- * - Full-width layout, no excessive empty space
+ * Hero — EXACT verbatim text from user (latest revision).
+ *
+ * Changes from previous version:
+ *   - CTA buttons removed (no "নোটস কিনুন" or "নোটস-এ কী আছে?")
+ *   - "আমাদের নোট এ কী বিশেষত্ব আছে?" heading uses accent color (not black)
+ *   - FEATURES vii text: "প্রত্যেকটি বিষয়ের অধ্যায়ভিত্তিক সম্পূর্ণ ধারণা।"
+ *   - List items wrap properly (single column, no right-side overflow)
+ *   - Middle blockquote uses accent color + bold
+ *   - "এই নোটস টি কাদের প্রয়োজন?" heading uses accent color (not black)
+ *   - NEEDED_FOR iii: "সাপ্লিমেন্টারি বা ইয়ার-ব্যাক (Year back) পাওয়া শিক্ষার্থী।"
+ *   - NEEDED_FOR v: "গ্রামীণ কোয়াক বা পল্লী চিকিৎসক।"
  */
 
 const FEATURES: { n: string; text: string }[] = [
@@ -17,15 +24,15 @@ const FEATURES: { n: string; text: string }[] = [
   { n: "iv",  text: "VVI MCQ, SAQ, FIB এবং Suggestive Long Question-Answer" },
   { n: "v",   text: "বাংলা, হিন্দি, ওড়িয়া Translation (আপনার বোঝার সুবিধার্থে)" },
   { n: "vi",  text: "Chapter wise Summary (সারসংক্ষেপটি chapter-এর মূল ধারণা পেতে সাহায্য করবে)" },
-  { n: "vii", text: "প্রতেকটি বিষয়ের অধ্যায়ভিত্তিক সম্পূর্ণ ধারণা।" },
+  { n: "vii", text: "প্রত্যেকটি বিষয়ের অধ্যায়ভিত্তিক সম্পূর্ণ ধারণা।" },
 ];
 
 const NEEDED_FOR: { n: string; text: string }[] = [
   { n: "i",   text: "ব্যস্ত চাকরিজীবী ও কর্পোরেট কর্মী।" },
   { n: "ii",  text: "শিক্ষাজীবনে দীর্ঘ বিরতি (gap) থাকা ছাত্রছাত্রী।" },
-  { n: "iii", text: "সাপ্লিমেন্টারি বা ইয়ার-বাক (Year back) পাওয়া শিক্ষার্থী।" },
+  { n: "iii", text: "সাপ্লিমেন্টারি বা ইয়ার-ব্যাক (Year back) পাওয়া শিক্ষার্থী।" },
   { n: "iv",  text: "আসন্ন Exit Exam নিয়ে চিন্তিত ছাত্রছাত্রী।" },
-  { n: "v",   text: "গ্রামীণ ফার্মাক বা পল্লী চিকিৎসক।" },
+  { n: "v",   text: "গ্রামীণ কোয়াক বা পল্লী চিকিৎসক।" },
   { n: "vi",  text: "সংসার ও পড়াশোনা এক সাথে সামলানো শিক্ষার্থী।" },
   { n: "vii", text: "ইংরেজি ভাষায় ভীতি থাকা শিক্ষার্থী।" },
   { n: "viii",text: "পরীক্ষার ঠিক আগে জেগে ওঠা শিক্ষার্থী।" },
@@ -42,7 +49,6 @@ export function Hero() {
             <Image src="/images/logo.jpeg" alt="Indrani Pathsala Logo" fill sizes="96px" className="object-cover" priority />
           </div>
 
-          {/* SOLID dark heading — no gradient (was unreadable) */}
           <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Welcome to
             <br className="sm:hidden" />{" "}
@@ -55,28 +61,10 @@ export function Hero() {
             আজই সংগ্রহ করুন আমাদের প্রিমিয়াম সাজেস্টিভ নোটস সঙ্গে Bengali Translation।
           </p>
 
-          {/* CTAs */}
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="#pricing"
-              className="glow-amber inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:opacity-90"
-            >
-              <span className="bn">নোটস কিনুন</span> <ChevronRight className="h-4 w-4" />
-            </a>
-            <a
-              href="#notes-features"
-              className="bn inline-flex items-center gap-2 rounded-full border border-border bg-card px-7 py-3 text-sm font-semibold text-foreground transition hover:bg-muted/50"
-            >
-              নোটস-এ কী আছে?
-            </a>
-          </div>
+          {/* CTA buttons REMOVED per user request */}
         </div>
 
-        {/* === Section: আমাদের নোট এ কী বিশেষত্ব আছে? ===
-            Use a 2-col layout on desktop:
-              - LEFT: heading + 7 numbered items + blockquote
-              - RIGHT: the IMAGE (sized to fit nicely, not stretched)
-            On mobile: stacked vertically */}
+        {/* === Section: আমাদের নোট এ কী বিশেষত্ব আছে? === */}
         <div
           id="notes-features"
           className="mt-16 rounded-3xl border border-border p-6 shadow-xl sm:p-10"
@@ -84,17 +72,21 @@ export function Hero() {
         >
           <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
             {/* LEFT: heading + items + blockquote */}
-            <div>
+            <div className="min-w-0">
               <h2
                 className="bn text-2xl font-bold sm:text-3xl"
-                style={{ color: "var(--surface-elevated-foreground)" }}
+                style={{ color: "var(--surface-elevated-accent)" }}
               >
                 আমাদের নোট এ কী বিশেষত্ব আছে?
               </h2>
 
               <ol className="bn mt-6 space-y-3 text-[15px] leading-relaxed sm:text-base">
                 {FEATURES.map((f) => (
-                  <li key={f.n} className="flex items-start gap-3" style={{ color: "var(--surface-elevated-foreground)" }}>
+                  <li
+                    key={f.n}
+                    className="flex items-start gap-3"
+                    style={{ color: "var(--surface-elevated-foreground)" }}
+                  >
                     <span
                       className="mt-0.5 flex h-7 w-9 flex-shrink-0 items-center justify-center rounded-md font-mono text-[12px] font-bold"
                       style={{
@@ -104,18 +96,18 @@ export function Hero() {
                     >
                       {f.n}.
                     </span>
-                    <span>{f.text}</span>
+                    <span className="flex-1">{f.text}</span>
                   </li>
                 ))}
               </ol>
 
-              {/* middle paragraph as BLOCKQUOTE (verbatim) */}
+              {/* middle paragraph as BLOCKQUOTE — accent color + bold */}
               <blockquote
-                className="bn mt-8 rounded-r-xl border-l-4 px-5 py-4 text-[14px] leading-relaxed sm:text-[15px]"
+                className="bn mt-8 rounded-r-xl border-l-4 px-5 py-4 text-[14px] leading-relaxed font-bold sm:text-[15px]"
                 style={{
                   borderColor: "var(--surface-elevated-accent)",
                   backgroundColor: "var(--surface-elevated-muted)",
-                  color: "var(--surface-elevated-foreground)",
+                  color: "var(--surface-elevated-accent)",
                 }}
               >
                 গত বছরের ফেল করার হার এবং বর্তমান পরীক্ষার কঠোর ব্যবস্থা ও পাশ করার
@@ -124,7 +116,7 @@ export function Hero() {
               </blockquote>
             </div>
 
-            {/* RIGHT: IMAGE — properly sized, not stretched, capped to ~480px tall */}
+            {/* RIGHT: IMAGE — properly sized, not stretched */}
             <div className="flex flex-col items-center lg:sticky lg:top-24">
               <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-border shadow-xl">
                 <div className="relative aspect-[1317/1600] w-full">
@@ -148,15 +140,14 @@ export function Hero() {
           </div>
         </div>
 
-        {/* === Section: এই নোটস টি কাদের প্রয়োজন? ===
-            Full-width, two-column items on desktop */}
+        {/* === Section: এই নোটস টি কাদের প্রয়োজন? === */}
         <div
           className="mt-8 rounded-3xl border border-border p-6 shadow-xl sm:p-10"
           style={{ backgroundColor: "var(--surface-elevated)" }}
         >
           <h2
             className="bn text-center text-2xl font-bold sm:text-3xl"
-            style={{ color: "var(--surface-elevated-foreground)" }}
+            style={{ color: "var(--surface-elevated-accent)" }}
           >
             এই নোটস টি কাদের প্রয়োজন?
           </h2>
@@ -177,7 +168,7 @@ export function Hero() {
                 >
                   {f.n}.
                 </span>
-                <span>{f.text}</span>
+                <span className="flex-1">{f.text}</span>
               </li>
             ))}
           </ol>
@@ -186,7 +177,7 @@ export function Hero() {
           <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-emerald-500" />
-              <span className="bn">Secure Razorpay Payment</span>
+              <span className="bn">Secure Payment</span>
             </div>
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-primary" />

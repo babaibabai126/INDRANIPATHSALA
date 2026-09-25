@@ -22,8 +22,8 @@ export function Header() {
             <div className="text-base font-bold tracking-tight text-foreground sm:text-lg">
               Indrani Pathsala
             </div>
-            <div className="bn text-[10px] text-accent sm:text-xs">
-              ইন্দ্রাণী পাঠশালা · D.Pharm Premium Notes
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-accent sm:text-xs">
+              YOUR STUDY PARTNER FOR SUCCESS
             </div>
           </div>
         </a>
@@ -31,7 +31,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <a
             href="tel:+918293742022"
-            className="hidden items-center gap-1.5 rounded-full border border-border px-3 py-2 text-xs font-medium text-foreground/90 transition hover:bg-muted/50 sm:inline-flex"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-2 text-xs font-medium text-foreground/90 transition hover:bg-muted/50"
           >
             <Phone className="h-3.5 w-3.5" />
             <span className="font-mono">8293742022</span>

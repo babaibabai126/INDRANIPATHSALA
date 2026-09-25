@@ -29,7 +29,7 @@ export function Benefits() {
             <Target className="h-3.5 w-3.5" />
             <span className="bn">যা যা পাবেন</span>
           </div>
-          <h2 className="bn mt-4 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
+          <h2 className="bn mt-4 text-2xl font-bold text-accent sm:text-3xl lg:text-4xl">
             নোটস নিলে আপনার কী লাভ হবে?
           </h2>
         </div>
