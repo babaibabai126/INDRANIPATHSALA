@@ -50,11 +50,11 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:indraniPathsala2026@gmail.com"
+                  href="mailto:indranipathsala2026@gmail.com"
                   className="flex items-start gap-2.5 transition hover:text-foreground"
                 >
                   <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
-                  <span className="break-all">indraniPathsala2026@gmail.com</span>
+                  <span className="break-all">indranipathsala2026@gmail.com</span>
                 </a>
               </li>
               <li className="flex items-start gap-2.5">

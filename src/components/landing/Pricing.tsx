@@ -1,14 +1,13 @@
 "use client";
 
-import { CheckCircle2, Crown, Zap, Languages } from "lucide-react";
+import { useState } from "react";
+import { Crown, CheckCircle2 } from "lucide-react";
+import { PaymentFormModal } from "./PaymentFormModal";
 
 /**
- * BUY NOW — verbatim text from user.
- * NEW PRICES (per user spec):
- *   1st Year — English Only: ₹999
- *   1st Year — English + Bengali (Combo): ₹1499
- *   2nd Year — English Only: ₹999
- *   2nd Year — English + Bengali (Combo): ₹1499
+ * BUY NOW — Pricing section.
+ * No features list, no Drive links. Just badge + title + price + BUY NOW button.
+ * BUY NOW click → opens PaymentFormModal popup.
  */
 
 type Plan = {
@@ -19,10 +18,8 @@ type Plan = {
   titleBn: string;
   price: number;
   originalPrice?: number;
-  features: { en: string; bn: string }[];
   popular?: boolean;
   code: string;
-  razorpayUrl: string;
 };
 
 const PLANS: Plan[] = [
@@ -35,14 +32,6 @@ const PLANS: Plan[] = [
     price: 999,
     originalPrice: 1499,
     code: "1en",
-    razorpayUrl: "https://rzp.io/rzp/GtZpWok",
-    features: [
-      { en: "Complete PCI ER-2020 Syllabus", bn: "সম্পূর্ণ PCI ER-2020 সিলেবাস" },
-      { en: "Chapter-wise Summary", bn: "Chapter-wise সারাংশ" },
-      { en: "VVI MCQ · SAQ · FIB", bn: "VVI MCQ, SAQ, FIB" },
-      { en: "Long Question-Answer", bn: "Long Question-Answer" },
-      { en: "Smart Revision Material", bn: "Smart Revision Material" },
-    ],
   },
   {
     badge: "1st Year · COMBO",
@@ -54,14 +43,6 @@ const PLANS: Plan[] = [
     originalPrice: 1999,
     popular: true,
     code: "1combo",
-    razorpayUrl: "https://rzp.io/rzp/mBBPn9cU",
-    features: [
-      { en: "Everything in English Version", bn: "English Version-এর সব সুবিধা" },
-      { en: "Bengali Translation (chapter-wise)", bn: "প্রতিটি chapter-এ বাংলা অনুবাদ" },
-      { en: "Easy to understand language", bn: "সহজ বোঝার ভাষা" },
-      { en: "Both language combined PDF", bn: "দুটি ভাষার কম্বো PDF" },
-      { en: "Best for rural students", bn: "গ্রামীণ স্টুডেন্টদের জন্য সেরা" },
-    ],
   },
   {
     badge: "2nd Year",
@@ -72,14 +53,6 @@ const PLANS: Plan[] = [
     price: 999,
     originalPrice: 1499,
     code: "2en",
-    razorpayUrl: "https://rzp.io/rzp/GtZpWok",
-    features: [
-      { en: "Complete PCI ER-2020 Syllabus", bn: "সম্পূর্ণ PCI ER-2020 সিলেবাস" },
-      { en: "Chapter-wise Summary", bn: "Chapter-wise সারাংশ" },
-      { en: "VVI MCQ · SAQ · FIB", bn: "VVI MCQ, SAQ, FIB" },
-      { en: "Long Question-Answer", bn: "Long Question-Answer" },
-      { en: "Exit Exam focused", bn: "Exit Exam প্রস্তুতি" },
-    ],
   },
   {
     badge: "2nd Year · COMBO",
@@ -90,18 +63,18 @@ const PLANS: Plan[] = [
     price: 1499,
     originalPrice: 1999,
     code: "2combo",
-    razorpayUrl: "https://rzp.io/rzp/mBBPn9cU",
-    features: [
-      { en: "Everything in English Version", bn: "English Version-এর সব সুবিধা" },
-      { en: "Bengali Translation (chapter-wise)", bn: "প্রতিটি chapter-এ বাংলা অনুবাদ" },
-      { en: "Easy to understand language", bn: "সহজ বোঝার ভাষা" },
-      { en: "Both language combined PDF", bn: "দুটি ভাষার কম্বো PDF" },
-      { en: "Best for rural students", bn: "গ্রামীণ স্টুডেন্টদের জন্য সেরা" },
-    ],
   },
 ];
 
 export function Pricing() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<string>("1en");
+
+  const openModal = (code: string) => {
+    setSelectedCourse(code);
+    setModalOpen(true);
+  };
+
   return (
     <section id="pricing" className="relative py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -110,7 +83,7 @@ export function Pricing() {
             <Crown className="h-3.5 w-3.5" />
             <span>BUY NOW</span>
           </div>
-          <h2 className="bn mt-4 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
+          <h2 className="bn mt-4 text-2xl font-bold text-accent sm:text-3xl lg:text-4xl">
             D.Pharm 1st / 2nd Year Premium Suggestive Notes
           </h2>
         </div>
@@ -119,13 +92,13 @@ export function Pricing() {
           {/* 1st Year group */}
           <div>
             <div className="mb-3 flex items-center gap-2">
-              <span className="bn inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">
+              <span className="bn inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-4 py-2 text-sm font-extrabold uppercase tracking-wide text-primary">
                 1st Year Premium Suggestive Notes
               </span>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {PLANS.filter((p) => p.year === "1st Year").map((plan, i) => (
-                <PlanCard key={i} plan={plan} />
+                <PlanCard key={i} plan={plan} onBuy={openModal} />
               ))}
             </div>
           </div>
@@ -133,34 +106,30 @@ export function Pricing() {
           {/* 2nd Year group */}
           <div>
             <div className="mb-3 flex items-center gap-2">
-              <span className="bn inline-flex items-center gap-1.5 rounded-full bg-accent-purple/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-accent-purple">
+              <span className="bn inline-flex items-center gap-1.5 rounded-full bg-accent-purple/15 px-4 py-2 text-sm font-extrabold uppercase tracking-wide text-accent-purple">
                 2nd Year Premium Suggestive Notes
               </span>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {PLANS.filter((p) => p.year === "2nd Year").map((plan, i) => (
-                <PlanCard key={i} plan={plan} />
+                <PlanCard key={i} plan={plan} onBuy={openModal} />
               ))}
             </div>
           </div>
         </div>
-
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-[11px] text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <Languages className="h-3.5 w-3.5 text-primary" />
-            <span className="bn">UPI · Cards · Net Banking</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-            <span className="bn">100% Secure Razorpay</span>
-          </div>
-        </div>
       </div>
+
+      {/* Payment form modal */}
+      <PaymentFormModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        preselectedCourse={selectedCourse}
+      />
     </section>
   );
 }
 
-function PlanCard({ plan }: { plan: Plan }) {
+function PlanCard({ plan, onBuy }: { plan: Plan; onBuy: (code: string) => void }) {
   return (
     <div
       className={`relative flex flex-col overflow-hidden rounded-2xl border bg-card p-5 transition hover:-translate-y-1 ${
@@ -171,7 +140,7 @@ function PlanCard({ plan }: { plan: Plan }) {
     >
       {plan.popular && (
         <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-accent-foreground">
-          <Zap className="h-3 w-3" /> Popular
+          Popular
         </div>
       )}
 
@@ -197,37 +166,14 @@ function PlanCard({ plan }: { plan: Plan }) {
         )}
         <span className="text-[10px] text-muted-foreground">/-</span>
       </div>
+
       <div className="mt-1 flex items-center gap-1.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
         <CheckCircle2 className="h-3 w-3" />
         <span className="bn">Instant Email PDF Delivery</span>
       </div>
 
-      <ul className="mt-4 space-y-2">
-        {plan.features.map((f, idx) => (
-          <li key={idx} className="flex items-start gap-2">
-            <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-emerald-500" />
-            <div>
-              <div className="text-[12px] text-foreground/90">{f.en}</div>
-              <div className="bn text-[10px] text-muted-foreground">{f.bn}</div>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      <a
-        href={plan.razorpayUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => {
-          // Also scroll to payment form so user can fill details first
-          setTimeout(() => {
-            const el = document.getElementById("payment");
-            el?.scrollIntoView({ behavior: "smooth" });
-            const sel = document.querySelector<HTMLSelectElement>("#payment-course-select");
-            if (sel) sel.value = plan.code;
-            sel?.dispatchEvent(new Event("change", { bubbles: true }));
-          }, 100);
-        }}
+      <button
+        onClick={() => onBuy(plan.code)}
         className={`mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold transition ${
           plan.popular
             ? "bg-accent text-accent-foreground hover:opacity-90"
@@ -235,7 +181,7 @@ function PlanCard({ plan }: { plan: Plan }) {
         }`}
       >
         BUY NOW →
-      </a>
+      </button>
     </div>
   );
 }
