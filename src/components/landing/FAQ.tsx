@@ -52,11 +52,10 @@ export function FAQ() {
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
             <HelpCircle className="h-3.5 w-3.5" />
-            <span>Student-দের সবচেয়ে বেশি জিজ্ঞাসিত প্রশ্ন (FAQs)</span>
+            <span>FAQs</span>
           </div>
-          <h2 className="bn mt-4 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">
-            Student-দের সবচেয়ে বেশি জিজ্ঞাসিত{" "}
-            <span className="text-accent">প্রশ্ন (FAQs)</span>
+          <h2 className="bn mt-4 text-2xl font-bold text-accent sm:text-3xl lg:text-4xl">
+            Student-দের সবচেয়ে বেশি জিজ্ঞাসিত প্রশ্ন (FAQs)
           </h2>
         </div>
 

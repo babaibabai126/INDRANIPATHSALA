@@ -28,7 +28,7 @@ const FEATURES: { n: string; text: string }[] = [
 ];
 
 const NEEDED_FOR: { n: string; text: string }[] = [
-  { n: "i",   text: "ব্যস্ত চাকরিজীবী ও কর্পোরেট কর্মী।" },
+  { n: "i",   text: "ব্যস্ত চাকুরিজীবী ও কর্পোরেট কর্মী।" },
   { n: "ii",  text: "শিক্ষাজীবনে দীর্ঘ বিরতি (gap) থাকা ছাত্রছাত্রী।" },
   { n: "iii", text: "সাপ্লিমেন্টারি বা ইয়ার-ব্যাক (Year back) পাওয়া শিক্ষার্থী।" },
   { n: "iv",  text: "আসন্ন Exit Exam নিয়ে চিন্তিত ছাত্রছাত্রী।" },
