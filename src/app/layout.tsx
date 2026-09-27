@@ -48,9 +48,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Light theme only — no ThemeProvider needed.
+  // Dark mode default (restored per user request)
   return (
-    <html lang="bn" suppressHydrationWarning>
+    <html lang="bn" className="dark" suppressHydrationWarning>
       <body
         className={`${notoBengali.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
       >

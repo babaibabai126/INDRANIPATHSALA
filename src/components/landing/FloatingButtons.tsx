@@ -1,16 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Phone, MessageCircle, ArrowUp } from "lucide-react";
+import { Phone, MessageCircle, ArrowUp, Video } from "lucide-react";
+import { PaymentFormModal } from "./PaymentFormModal";
 
 /**
- * Floating WhatsApp + Call buttons — per user spec:
- * "Call and Whatsapp logo floating থাকবে"
+ * Floating buttons — WhatsApp + Call + Recorded Class Access.
+ *
+ * Per user spec:
+ *   - "recorded class access link" floating button like WhatsApp/Call
+ *   - Click → opens payment form (1st or 2nd year recorded class)
+ *   - 1st year has recorded class, 2nd year also has recorded class
  */
 
 export function FloatingButtons() {
   const [showTop, setShowTop] = useState(false);
   const [showBuy, setShowBuy] = useState(false);
+  const [recordedModalOpen, setRecordedModalOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -34,6 +40,17 @@ export function FloatingButtons() {
           }`}
         >
           <ArrowUp className="h-4 w-4" />
+        </button>
+
+        {/* Recorded Class Access — floating button (NEW) */}
+        <button
+          onClick={() => setRecordedModalOpen(true)}
+          aria-label="Recorded Class Access"
+          title="Recorded Class Access — ক্লিক করে payment form পূরণ করুন"
+          className="relative flex h-12 w-12 items-center justify-center rounded-full bg-accent-purple text-white shadow-xl shadow-purple-500/30 transition hover:scale-105 hover:opacity-90"
+        >
+          <span className="absolute inset-0 rounded-full bg-accent-purple opacity-60 animate-ping" />
+          <Video className="relative h-5 w-5" />
         </button>
 
         {/* WhatsApp floating */}
@@ -66,13 +83,20 @@ export function FloatingButtons() {
       >
         <div className="mx-auto max-w-7xl px-4 pb-3 sm:pb-4">
           <a
-            href="#payment"
+            href="#pricing"
             className="glow-amber flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-accent-orange px-6 py-3 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:brightness-110 sm:mx-auto sm:inline-flex"
           >
             <span className="bn">এখনই কিনুন</span> — ₹999 থেকে শুরু →
           </a>
         </div>
       </div>
+
+      {/* Recorded Class Access payment form modal */}
+      <PaymentFormModal
+        isOpen={recordedModalOpen}
+        onClose={() => setRecordedModalOpen(false)}
+        preselectedCourse="1en"
+      />
     </>
   );
 }

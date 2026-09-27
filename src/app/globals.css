@@ -43,21 +43,88 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* SINGLE light theme — cream background, dark brown text, amber CTA.
-   (Dark mode removed per user request.) */
-:root {
+/* DARK theme — Indrani Pathsala premium navy (default)
+   (Restored per user request — dark mode is the default.)
+   Light mode still available via .light class if needed. */
+:root,
+.dark {
   --radius: 0.75rem;
 
-  --background: #faf6ec;           /* warm cream */
-  --foreground: #2a1f10;           /* dark brown text — high contrast */
+  --background: #02081b;
+  --foreground: #e6edf6;
+
+  --card: #0e1730;
+  --card-foreground: #e6edf6;
+  --popover: #0e1730;
+  --popover-foreground: #e6edf6;
+
+  --primary: #c8901f;
+  --primary-foreground: #ffffff;
+
+  --secondary: #1a233a;
+  --secondary-foreground: #e6edf6;
+
+  --muted: #131c34;
+  --muted-foreground: #94a3b8;
+
+  --accent: #f5c451;
+  --accent-foreground: #1a1209;
+
+  --destructive: #ef4444;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: #c8901f;
+
+  --accent-orange: #f08a3e;
+  --accent-yellow: #f5c451;
+  --accent-blue: #5b8def;
+  --accent-purple: #b27ddb;
+  --accent-teal: #4ec9b0;
+  --accent-red: #e76f51;
+
+  --chart-1: #f08a3e;
+  --chart-2: #f5c451;
+  --chart-3: #5b8def;
+  --chart-4: #b27ddb;
+  --chart-5: #4ec9b0;
+
+  --sidebar: #0e1730;
+  --sidebar-foreground: #e6edf6;
+  --sidebar-primary: #c8901f;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1a233a;
+  --sidebar-accent-foreground: #e6edf6;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #c8901f;
+
+  --glow-1: rgba(200, 144, 31, 0.18);
+  --glow-2: rgba(178, 125, 219, 0.14);
+
+  /* Elevated surface: solid light card on dark background
+     for maximum Bengali text readability in dark mode. */
+  --surface-elevated: #faf4e6;
+  --surface-elevated-foreground: #1a1209;
+  --surface-elevated-muted: #efe2c4;
+  --surface-elevated-accent: #b8740a;
+  --surface-elevated-muted-foreground: #6b5c3f;
+  --surface-elevated-border: rgba(26, 18, 9, 0.10);
+}
+
+/* LIGHT theme — used if .light class is applied to html.
+   Not the default anymore, kept for fallback. */
+.light {
+  --radius: 0.75rem;
+
+  --background: #faf6ec;
+  --foreground: #2a1f10;
 
   --card: #ffffff;
   --card-foreground: #2a1f10;
   --popover: #ffffff;
   --popover-foreground: #2a1f10;
 
-  --primary: #c8901f;              /* amber CTA */
-  --primary-foreground: #ffffff;   /* white text on amber — better contrast */
+  --primary: #c8901f;
+  --primary-foreground: #ffffff;
 
   --secondary: #f3ecd9;
   --secondary-foreground: #2a1f10;
@@ -65,7 +132,7 @@
   --muted: #f3ecd9;
   --muted-foreground: #6b5c3f;
 
-  --accent: #b8740a;               /* darker amber for text accents (WCAG AA on cream) */
+  --accent: #b8740a;
   --accent-foreground: #ffffff;
 
   --destructive: #c1452d;
@@ -98,19 +165,13 @@
   --glow-1: rgba(200, 144, 31, 0.08);
   --glow-2: rgba(139, 53, 212, 0.05);
 
-  /* Elevated surface: solid white card on cream background
-     for maximum Bengali text readability. */
+  /* Elevated surface: solid white card on cream background */
   --surface-elevated: #ffffff;
   --surface-elevated-foreground: #2a1f10;
   --surface-elevated-muted: #f3ecd9;
   --surface-elevated-accent: #b8740a;
   --surface-elevated-muted-foreground: #6b5c3f;
   --surface-elevated-border: rgba(42, 31, 16, 0.10);
-}
-
-/* Backwards-compat alias for dark mode (no-op, just inherits root) */
-.dark {
-  /* Same as :root — dark mode removed */
 }
 
 @layer base {
