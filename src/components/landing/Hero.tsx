@@ -71,7 +71,7 @@ export function Hero() {
           style={{ backgroundColor: "var(--surface-elevated)" }}
         >
           <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
-            {/* LEFT: heading + items + blockquote */}
+            {/* LEFT: heading + items (blockquote is OUTSIDE on mobile, after image) */}
             <div className="min-w-0">
               <h2
                 className="bn text-2xl font-bold sm:text-3xl"
@@ -101,9 +101,10 @@ export function Hero() {
                 ))}
               </ol>
 
-              {/* middle paragraph as BLOCKQUOTE — accent color + bold */}
+              {/* middle paragraph as BLOCKQUOTE — accent color + bold
+                  HIDDEN on mobile (shown below image instead) */}
               <blockquote
-                className="bn mt-8 rounded-r-xl border-l-4 px-5 py-4 text-[14px] leading-relaxed font-bold sm:text-[15px]"
+                className="bn mt-8 hidden rounded-r-xl border-l-4 px-5 py-4 text-[14px] leading-relaxed font-bold sm:text-[15px] lg:block"
                 style={{
                   borderColor: "var(--surface-elevated-accent)",
                   backgroundColor: "var(--surface-elevated-muted)",
@@ -138,6 +139,20 @@ export function Hero() {
               </p>
             </div>
           </div>
+
+          {/* MOBILE ONLY: blockquote BELOW the image (after the grid) */}
+          <blockquote
+            className="bn mt-8 rounded-r-xl border-l-4 px-5 py-4 text-[14px] leading-relaxed font-bold sm:text-[15px] lg:hidden"
+            style={{
+              borderColor: "var(--surface-elevated-accent)",
+              backgroundColor: "var(--surface-elevated-muted)",
+              color: "var(--surface-elevated-accent)",
+            }}
+          >
+            গত বছরের ফেল করার হার এবং বর্তমান পরীক্ষার কঠোর ব্যবস্থা ও পাশ করার
+            নিশ্চয়তা—সবকিছুর সমাধান পেতে সময় থাকতে সিরিয়াস হন এবং আজই আমাদের
+            প্রিমিয়াম সাজেস্টিভ নোটস সংগ্রহ করুন।
+          </blockquote>
         </div>
 
         {/* === Section: এই নোটস টি কাদের প্রয়োজন? === */}
