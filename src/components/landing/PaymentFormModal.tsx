@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   User,
   Mail,
@@ -16,24 +16,19 @@ import {
 } from "lucide-react";
 
 /**
- * PaymentFormModal — popup modal with Payment Details form.
+ * PaymentFormModal — SECURE payment flow using Razorpay Webhook.
  *
  * Flow:
  *   1. User fills form (Name, MOB No, Email, Location, Course)
  *   2. Form submit → POST /api/purchase (saved as PENDING in Supabase)
  *   3. Razorpay payment link opens in NEW TAB
- *   4. Modal shows "Complete Payment" state with "I've Paid" button
- *   5. User pays in new tab, comes back, clicks "I've Paid"
- *   6. That triggers /api/send-course-email → marks PAID → sends email
- *   7. Modal shows success state
+ *   4. Modal shows "Waiting for payment confirmation..." and auto-polls
+ *   5. User pays in new tab → Razorpay sends webhook to /api/razorpay/webhook
+ *   6. Webhook marks purchase as PAID → auto-sends email
+ *   7. Modal detects status change → shows success
  *
- * Razorpay payment links:
- *   ₹999 plans → https://rzp.io/rzp/GtZpWok
- *   ₹1499 plans → https://rzp.io/rzp/mBBPn9cU
- *
- * Recorded Class (separate product):
- *   1st Year recorded class → ₹1 → rzp.io link TBD
- *   2nd Year recorded class → ₹2 → rzp.io link TBD
+ * SECURITY: User CANNOT mark as paid without actual payment.
+ * Only the Razorpay webhook can change status from PENDING to PAID.
  */
 
 const COURSES = [
@@ -56,6 +51,8 @@ type Props = {
   isRecordedClass?: boolean;
 };
 
+type ModalState = "form" | "waiting" | "success";
+
 export function PaymentFormModal({ isOpen, onClose, preselectedCourse, isRecordedClass }: Props) {
   const [form, setForm] = useState({
     name: "",
@@ -66,10 +63,13 @@ export function PaymentFormModal({ isOpen, onClose, preselectedCourse, isRecorde
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<ModalState>("form");
   const [purchaseId, setPurchaseId] = useState<string | null>(null);
   const [razorpayUrl, setRazorpayUrl] = useState<string | null>(null);
-  const [verifying, setVerifying] = useState(false);
-  const [done, setDone] = useState(false);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const courses = isRecordedClass ? RECORDED_CLASS_COURSES : COURSES;
+  const selectedCourse = courses.find((c) => c.value === form.course);
 
   // Reset when modal opens
   useEffect(() => {
@@ -78,8 +78,7 @@ export function PaymentFormModal({ isOpen, onClose, preselectedCourse, isRecorde
       setPurchaseId(null);
       setRazorpayUrl(null);
       setError(null);
-      setDone(false);
-      setVerifying(false);
+      setState("form");
     }
   }, [isOpen, preselectedCourse]);
 
@@ -95,10 +94,44 @@ export function PaymentFormModal({ isOpen, onClose, preselectedCourse, isRecorde
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  // Auto-poll for payment status when in "waiting" state
+  useEffect(() => {
+    if (state !== "waiting" || !purchaseId) return;
 
-  const courses = isRecordedClass ? RECORDED_CLASS_COURSES : COURSES;
-  const selectedCourse = courses.find((c) => c.value === form.course);
+    const pollPayment = async () => {
+      try {
+        const res = await fetch(`/api/purchase?id=${purchaseId}`, { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.purchase?.status === "PAID") {
+            // Payment confirmed! Switch to success state.
+            setState("success");
+            if (pollRef.current) {
+              clearInterval(pollRef.current);
+              pollRef.current = null;
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Poll error:", err);
+      }
+    };
+
+    // Poll every 3 seconds
+    pollRef.current = setInterval(pollPayment, 3000);
+
+    // Also poll immediately
+    pollPayment();
+
+    return () => {
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+        pollRef.current = null;
+      }
+    };
+  }, [state, purchaseId]);
+
+  if (!isOpen) return null;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,8 +153,11 @@ export function PaymentFormModal({ isOpen, onClose, preselectedCourse, isRecorde
       setPurchaseId(data.purchase.id);
       setRazorpayUrl(selectedCourse?.razorpayUrl || "https://rzp.io/rzp/GtZpWok");
 
-      // 2. Open Razorpay in NEW TAB (not redirect — keeps our page open)
+      // 2. Open Razorpay in NEW TAB
       window.open(selectedCourse?.razorpayUrl || "https://rzp.io/rzp/GtZpWok", "_blank", "noopener,noreferrer");
+
+      // 3. Switch to "waiting" state — auto-poll will detect payment
+      setState("waiting");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -129,36 +165,16 @@ export function PaymentFormModal({ isOpen, onClose, preselectedCourse, isRecorde
     }
   };
 
-  const handleVerifyPayment = async () => {
-    if (!purchaseId) return;
-    setVerifying(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/send-course-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ purchaseId }),
-      });
-
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}));
-        throw new Error(j.error || "Verification failed");
-      }
-
-      setDone(true);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Verification failed. Please contact us.");
-    } finally {
-      setVerifying(false);
-    }
-  };
-
   const handleClose = () => {
+    if (pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
     setError(null);
     setForm({ name: "", email: "", mobile: "", location: "", course: preselectedCourse || "1en" });
     setPurchaseId(null);
     setRazorpayUrl(null);
-    setDone(false);
+    setState("form");
     onClose();
   };
 
@@ -188,24 +204,10 @@ export function PaymentFormModal({ isOpen, onClose, preselectedCourse, isRecorde
           </button>
         </div>
 
-        {/* Info bar */}
-        {!purchaseId && (
-          <div className="bg-primary/10 px-5 py-3 text-center">
-            <p className="bn text-[11px] font-semibold text-foreground/80">
-              {isRecordedClass
-                ? "Recorded Class Access — Payment-এর পর লিংক আপনার Email-এ চলে যাবে।"
-                : "D.PHARM 1st/2nd year Premium Suggestive Notes — সম্পূর্ণ প্যাকেজ Payment-এর পর।"}
-            </p>
-            <p className="bn mt-0.5 text-[10px] text-muted-foreground">
-              0% Preparation থেকে Hero Result আপনার হাতে · Payment করার পর back বোতাম টিপবেন না · 10 second পর আপনার Email check করুন।
-            </p>
-          </div>
-        )}
-
         {/* Body */}
         <div className="p-5">
-          {/* STATE: done — payment verified, email sent */}
-          {done ? (
+          {/* STATE: success — payment confirmed by webhook */}
+          {state === "success" ? (
             <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
               <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
                 <CheckCircle2 className="h-6 w-6 text-emerald-500" />
@@ -214,7 +216,10 @@ export function PaymentFormModal({ isOpen, onClose, preselectedCourse, isRecorde
                 ধন্যবাদ {form.name}!
               </div>
               <p className="bn mt-2 text-[12px] leading-relaxed text-foreground/80">
-                আপনার Payment সফল হয়েছে এবং {isRecordedClass ? "Recorded Class লিংক" : "কোর্সের নোটস"} আপনার Email-এ পাঠানো হয়েছে।
+                আপনার Payment সফলভাবে যাচাই হয়েছে এবং {isRecordedClass ? "Recorded Class লিংক" : "কোর্সের নোটস"} আপনার Email-এ পাঠানো হয়েছে।
+              </p>
+              <p className="bn mt-1 text-[11px] text-muted-foreground">
+                দয়া করে আপনার Email ({form.email}) চেক করুন।
               </p>
               <p className="bn mt-2 text-[11px] text-muted-foreground">
                 যেকোনো সমস্যায় কল করুন: <span className="font-mono font-bold">8293742022</span>
@@ -226,198 +231,194 @@ export function PaymentFormModal({ isOpen, onClose, preselectedCourse, isRecorde
                 বন্ধ করুন
               </button>
             </div>
-          ) : purchaseId ? (
-            /* STATE: pending — payment link opened, waiting for user to confirm */
+          ) : state === "waiting" ? (
+            /* STATE: waiting — payment link opened, auto-polling for confirmation */
             <div className="rounded-xl border border-accent/30 bg-accent/10 p-6 text-center">
               <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent/20">
-                <Clock className="h-6 w-6 text-accent" />
+                <Loader2 className="h-6 w-6 animate-spin text-accent" />
               </div>
               <div className="bn text-base font-bold text-foreground">
-                Payment সম্পূর্ণ করুন
+                Payment যাচাই হচ্ছে...
               </div>
               <p className="bn mt-2 text-[12px] leading-relaxed text-muted-foreground">
-                নতুন ট্যাবে Razorpay payment page খোলা হয়েছে। সেখানে payment সম্পূর্ণ করুন,
-                তারপর এখানে ফিরে এসে "আমি Payment করেছি" বাটনে ক্লিক করুন।
+                নতুন ট্যাবে Razorpay payment page খোলা হয়েছে। সেখানে payment সম্পূর্ণ করুন।
+                Payment সফল হলে এখানে স্বয়ংক্রিয়ভাবে confirm হবে।
               </p>
               <p className="bn mt-1 text-[11px] text-muted-foreground">
                 Amount: <span className="font-bold text-foreground">₹{selectedCourse?.amount}</span>
                 {" · "}Email: <span className="font-bold">{form.email}</span>
               </p>
 
-              <div className="mt-4 flex flex-col gap-2">
-                <button
-                  onClick={handleVerifyPayment}
-                  disabled={verifying}
-                  className="glow-amber flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-xl shadow-emerald-600/30 transition hover:bg-emerald-700 disabled:opacity-60"
-                >
-                  {verifying ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      যাচাই হচ্ছে...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="h-4 w-4" />
-                      আমি Payment করেছি
-                    </>
-                  )}
-                </button>
+              <div className="mt-4">
                 <a
                   href={razorpayUrl || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-xs font-bold text-primary-foreground transition hover:opacity-90"
                 >
-                  <ExternalLink className="h-3 w-3" />
-                  Razorpay পেজ আবার খুলুন
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  Razorpay পেজ খুলুন
                 </a>
               </div>
 
-              {error && (
-                <div className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
-                  {error}
-                </div>
-              )}
+              <p className="bn mt-3 text-[10px] text-muted-foreground">
+                <ShieldCheck className="inline h-3 w-3 text-emerald-500" />
+                {" "}Payment স্বয়ংক্রিয়ভাবে verify হবে — কোনো ম্যানুয়াল confirm করতে হবে না।
+              </p>
             </div>
           ) : (
             /* STATE: form — initial form fill */
-            <form onSubmit={submit} className="space-y-3">
-              {/* Name + MOB No */}
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Field
-                  icon={User}
-                  label="Name"
-                  labelBn="নাম"
-                  value={form.name}
-                  onChange={(v) => setForm({ ...form, name: v })}
-                  required
-                />
-                <Field
-                  icon={Phone}
-                  label="MOB No"
-                  labelBn="মোবাইল নম্বর"
-                  type="tel"
-                  value={form.mobile}
-                  onChange={(v) => setForm({ ...form, mobile: v })}
-                  required
-                />
+            <>
+              {/* Info bar */}
+              <div className="bg-primary/10 px-4 py-3 text-center mb-4 rounded-xl">
+                <p className="bn text-[11px] font-semibold text-foreground/80">
+                  {isRecordedClass
+                    ? "Recorded Class Access — Payment-এর পর লিংক আপনার Email-এ চলে যাবে।"
+                    : "D.PHARM 1st/2nd year Premium Suggestive Notes — সম্পূর্ণ প্যাকেজ Payment-এর পর।"}
+                </p>
+                <p className="bn mt-0.5 text-[10px] text-muted-foreground">
+                  0% Preparation থেকে Hero Result আপনার হাতে · Payment করার পর back বোতাম টিপবেন না
+                </p>
               </div>
 
-              {/* Email */}
-              <Field
-                icon={Mail}
-                label="Email"
-                labelBn="ইমেইল (নোটস এখানে পাবেন)"
-                type="email"
-                value={form.email}
-                onChange={(v) => setForm({ ...form, email: v })}
-                required
-              />
-
-              {/* Location */}
-              <Field
-                icon={MapPin}
-                label="Location"
-                labelBn="ঠিকানা"
-                value={form.location}
-                onChange={(v) => setForm({ ...form, location: v })}
-                required
-              />
-
-              {/* Course select */}
-              <div>
-                <label className="bn mb-1 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-foreground">
-                  <CreditCard className="h-3 w-3 text-primary" />
-                  {isRecordedClass ? "Select Recorded Class" : "Select Notes Plan"}
-                </label>
-                <select
-                  value={form.course}
-                  onChange={(e) => setForm({ ...form, course: e.target.value })}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/40"
-                >
-                  {courses.map((c) => (
-                    <option key={c.value} value={c.value}>
-                      {c.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {error && (
-                <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
-                  {error}
+              <form onSubmit={submit} className="space-y-3">
+                {/* Name + MOB No */}
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field
+                    icon={User}
+                    label="Name"
+                    labelBn="নাম"
+                    value={form.name}
+                    onChange={(v) => setForm({ ...form, name: v })}
+                    required
+                  />
+                  <Field
+                    icon={Phone}
+                    label="MOB No"
+                    labelBn="মোবাইল নম্বর"
+                    type="tel"
+                    value={form.mobile}
+                    onChange={(v) => setForm({ ...form, mobile: v })}
+                    required
+                  />
                 </div>
-              )}
 
-              {/* Amount + PAY */}
-              <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 p-3">
+                {/* Email */}
+                <Field
+                  icon={Mail}
+                  label="Email"
+                  labelBn="ইমেইল (নোটস এখানে পাবেন)"
+                  type="email"
+                  value={form.email}
+                  onChange={(v) => setForm({ ...form, email: v })}
+                  required
+                />
+
+                {/* Location */}
+                <Field
+                  icon={MapPin}
+                  label="Location"
+                  labelBn="ঠিকানা"
+                  value={form.location}
+                  onChange={(v) => setForm({ ...form, location: v })}
+                  required
+                />
+
+                {/* Course select */}
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                    AMOUNT
-                  </div>
-                  <div className="text-2xl font-extrabold text-foreground">
-                    ₹{selectedCourse?.amount.toLocaleString("en-IN")}
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="glow-amber flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent-orange px-6 py-3 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:brightness-110 disabled:opacity-60"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>PAY →</>
-                  )}
-                </button>
-              </div>
-
-              <p className="bn text-center text-[11px] text-muted-foreground">
-                PAY বাটনে ক্লিক করলে নতুন ট্যাবে Razorpay payment page খুলবে। Payment সম্পূর্ণ করে
-                এখানে ফিরে এসে "আমি Payment করেছি" বাটনে ক্লিক করুন।
-              </p>
-
-              {/* Trust badges */}
-              <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <ShieldCheck className="h-3 w-3 text-emerald-500" />
-                  100% Secure
-                </span>
-                <span>·</span>
-                <span>UPI / VISA / RUPAY</span>
-                <span>·</span>
-                <span className="bn">All sales are final</span>
-              </div>
-
-              {/* Contact */}
-              <div className="mt-2 rounded-xl border border-border bg-muted/20 p-3 text-center">
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Any Problem? Contact Us
-                </div>
-                <div className="mt-1.5 flex flex-wrap items-center justify-center gap-3 text-[11px] text-foreground">
-                  <a href="tel:+918293742022" className="inline-flex items-center gap-1 font-mono font-bold">
-                    <Phone className="h-3 w-3 text-emerald-500" />
-                    8293742022
-                  </a>
-                  <a
-                    href="mailto:info@indranipathsala.com"
-                    className="inline-flex items-center gap-1 break-all font-bold"
+                  <label className="bn mb-1 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-foreground">
+                    <CreditCard className="h-3 w-3 text-primary" />
+                    {isRecordedClass ? "Select Recorded Class" : "Select Notes Plan"}
+                  </label>
+                  <select
+                    value={form.course}
+                    onChange={(e) => setForm({ ...form, course: e.target.value })}
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/40"
                   >
-                    <Mail className="h-3 w-3 text-primary" />
-                    info@indranipathsala.com
-                  </a>
+                    {courses.map((c) => (
+                      <option key={c.value} value={c.value}>
+                        {c.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              </div>
 
-              {/* Terms */}
-              <div className="text-center text-[10px] text-muted-foreground">
-                <span className="font-semibold text-foreground">Terms:</span>{" "}
-                <span className="bn">All sales are Final once the Digital Product is dispatched to your Email.</span>
-              </div>
-            </form>
+                {error && (
+                  <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
+                    {error}
+                  </div>
+                )}
+
+                {/* Amount + PAY */}
+                <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 p-3">
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                      AMOUNT
+                    </div>
+                    <div className="text-2xl font-extrabold text-foreground">
+                      ₹{selectedCourse?.amount.toLocaleString("en-IN")}
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="glow-amber flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent-orange px-6 py-3 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:brightness-110 disabled:opacity-60"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>PAY →</>
+                    )}
+                  </button>
+                </div>
+
+                <p className="bn text-center text-[11px] text-muted-foreground">
+                  PAY বাটনে ক্লিক করলে নতুন ট্যাবে Razorpay payment page খুলবে।
+                  Payment সম্পূর্ণ করলে স্বয়ংক্রিয়ভাবে verify হবে এবং ইমেইল চলে যাবে।
+                </p>
+
+                {/* Trust badges */}
+                <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <ShieldCheck className="h-3 w-3 text-emerald-500" />
+                    100% Secure
+                  </span>
+                  <span>·</span>
+                  <span>UPI / VISA / RUPAY</span>
+                  <span>·</span>
+                  <span className="bn">All sales are final</span>
+                </div>
+
+                {/* Contact */}
+                <div className="mt-2 rounded-xl border border-border bg-muted/20 p-3 text-center">
+                  <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Any Problem? Contact Us
+                  </div>
+                  <div className="mt-1.5 flex flex-wrap items-center justify-center gap-3 text-[11px] text-foreground">
+                    <a href="tel:+918293742022" className="inline-flex items-center gap-1 font-mono font-bold">
+                      <Phone className="h-3 w-3 text-emerald-500" />
+                      8293742022
+                    </a>
+                    <a
+                      href="mailto:info@indranipathsala.com"
+                      className="inline-flex items-center gap-1 break-all font-bold"
+                    >
+                      <Mail className="h-3 w-3 text-primary" />
+                      info@indranipathsala.com
+                    </a>
+                  </div>
+                </div>
+
+                {/* Terms */}
+                <div className="text-center text-[10px] text-muted-foreground">
+                  <span className="font-semibold text-foreground">Terms:</span>{" "}
+                  <span className="bn">All sales are Final once the Digital Product is dispatched to your Email.</span>
+                </div>
+              </form>
+            </>
           )}
         </div>
       </div>
