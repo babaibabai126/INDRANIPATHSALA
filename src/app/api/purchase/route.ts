@@ -6,11 +6,15 @@ import { getDb } from "@/lib/db";
 //   1st Year — Combo: ₹1499
 //   2nd Year — English Only: ₹999
 //   2nd Year — Combo: ₹1499
+//   Recorded Class 1st Year: ₹1 (separate product)
+//   Recorded Class 2nd Year: ₹2 (separate product)
 const COURSES: Record<string, { label: string; amount: number }> = {
   "1en": { label: "1st Year — Only English", amount: 999 },
   "1combo": { label: "1st Year — English + Bengali (Combo)", amount: 1499 },
   "2en": { label: "2nd Year — Only English", amount: 999 },
   "2combo": { label: "2nd Year — English + Bengali (Combo)", amount: 1499 },
+  "rc1en": { label: "1st Year Recorded Class Access", amount: 1 },
+  "rc2en": { label: "2nd Year Recorded Class Access", amount: 2 },
 };
 
 // POST /api/purchase — user filled the form, save as PENDING.

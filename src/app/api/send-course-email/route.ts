@@ -14,31 +14,38 @@ import nodemailer from "nodemailer";
  * Requires GMAIL_APP_PASSWORD env var (Gmail App Password, not regular password).
  */
 
-// Google Drive folder links for each course + recorded class links
-const COURSE_LINKS: Record<string, { folder: string; label: string; driveUrl: string; recordedClassUrl: string }> = {
+// Google Drive folder links for each course (NOTES ONLY — recorded class is separate)
+const COURSE_LINKS: Record<string, { folder: string; label: string; driveUrl: string }> = {
   "1en": {
     folder: "1st Year — Only English",
     label: "1st Year (Only English Version) ₹999",
     driveUrl: "https://drive.google.com/drive/folders/10bd7ltAYvgWereSRlbcvmpP62xg3w4tU?usp=sharing",
-    recordedClassUrl: "https://drive.google.com/drive/folders/1Sfd5W8hnRWGR7Vc7eyylJ6axlAZNGr_O?usp=drive_link",
   },
   "1combo": {
     folder: "1st Year — English + Bengali (Combo)",
     label: "1st Year (English + Bengali Translation (Combo)) ₹1499",
     driveUrl: "https://drive.google.com/drive/folders/1mr58yom0DYw2Fsdtiw6UOkofzFEcZGMg?usp=sharing",
-    recordedClassUrl: "https://drive.google.com/drive/folders/1Sfd5W8hnRWGR7Vc7eyylJ6axlAZNGr_O?usp=drive_link",
   },
   "2en": {
     folder: "2nd Year — Only English",
     label: "2nd Year (Only English Version) ₹999",
     driveUrl: "https://drive.google.com/drive/folders/16f_3fNfFToLnAES4mn8vtAAVdFFIQg4h",
-    recordedClassUrl: "https://drive.google.com/drive/folders/1ye8W5a0oQNq1hfhP3dBRZyCxdc4hzkS4?usp=drive_link",
   },
   "2combo": {
     folder: "2nd Year — English + Bengali (Combo)",
     label: "2nd Year (English + Bengali Translation (Combo)) ₹1499",
     driveUrl: "https://drive.google.com/drive/folders/1FD3WD7812KOTSjjSfen53vAvSDrrKKKz?usp=sharing",
-    recordedClassUrl: "https://drive.google.com/drive/folders/1ye8W5a0oQNq1hfhP3dBRZyCxdc4hzkS4?usp=drive_link",
+  },
+  // Recorded Class courses (separate product — separate email)
+  "rc1en": {
+    folder: "1st Year Recorded Class",
+    label: "1st Year Recorded Class Access ₹1",
+    driveUrl: "https://drive.google.com/drive/folders/1Sfd5W8hnRWGR7Vc7eyylJ6axlAZNGr_O?usp=drive_link",
+  },
+  "rc2en": {
+    folder: "2nd Year Recorded Class",
+    label: "2nd Year Recorded Class Access ₹2",
+    driveUrl: "https://drive.google.com/drive/folders/1ye8W5a0oQNq1hfhP3dBRZyCxdc4hzkS4?usp=drive_link",
   },
 };
 
@@ -134,19 +141,6 @@ export async function POST(req: NextRequest) {
           প্রতিটি ফাইল আলাদাভাবে ডাউনলোড করতে পারবেন।
         </p>
 
-        <!-- Recorded Class Access -->
-        <div style="background:#f0f4ff;border-radius:8px;padding:15px;margin:25px 0;border-left:4px solid #5b8def;">
-          <h3 style="color:#1a3a6e;margin:0 0 10px;font-size:16px;">🎓 Recorded Class Access</h3>
-          <p style="color:#4a4a4a;font-size:14px;line-height:1.6;margin:0 0 12px;">
-            আপনার কোর্সের রেকর্ডেড ক্লাস ভিডিও নিচের লিংক থেকে দেখতে পারবেন:
-          </p>
-          <div style="text-align:center;">
-            <a href="${courseInfo.recordedClassUrl}" target="_blank" style="display:inline-block;background:#5b8def;color:#fff;text-decoration:none;padding:12px 30px;border-radius:8px;font-size:15px;font-weight:bold;">
-              🎬 Recorded Class দেখুন
-            </a>
-          </div>
-        </div>
-
         <!-- Order details -->
         <div style="background:#f9f9f9;border-radius:8px;padding:15px;margin:20px 0;">
           <h3 style="color:#2a1f10;margin:0 0 10px;font-size:14px;">Order Details:</h3>
@@ -195,7 +189,6 @@ export async function POST(req: NextRequest) {
       email: purchase.email,
       courseLabel: courseInfo.label,
       driveUrl: courseInfo.driveUrl,
-      recordedClassUrl: courseInfo.recordedClassUrl,
       userName: purchase.name,
     });
   } catch (e) {
