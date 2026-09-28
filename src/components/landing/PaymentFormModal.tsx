@@ -45,8 +45,8 @@ const COURSES = [
 
 // Recorded class courses (separate product)
 const RECORDED_CLASS_COURSES = [
-  { label: "1st Year Recorded Class — ₹1", value: "rc1en", amount: 1, razorpayUrl: "https://rzp.io/rzp/GtZpWok" },
-  { label: "2nd Year Recorded Class — ₹2", value: "rc2en", amount: 2, razorpayUrl: "https://rzp.io/rzp/mBBPn9cU" },
+  { label: "1st Year Recorded Class — ₹1", value: "rc1en", amount: 1, razorpayUrl: "https://rzp.io/rzp/BrRtGSdu" },
+  { label: "2nd Year Recorded Class — ₹2", value: "rc2en", amount: 2, razorpayUrl: "https://rzp.io/rzp/nww2OajL" },
 ];
 
 type Props = {
