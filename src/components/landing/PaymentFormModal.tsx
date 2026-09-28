@@ -277,11 +277,11 @@ export function PaymentFormModal({ isOpen, onClose, preselectedCourse }: Props) 
                   8293742022
                 </a>
                 <a
-                  href="mailto:indranipathsala2026@gmail.com"
+                  href="mailto:info@indranipathsala.com"
                   className="inline-flex items-center gap-1 break-all font-bold"
                 >
                   <Mail className="h-3 w-3 text-primary" />
-                  indranipathsala2026@gmail.com
+                  info@indranipathsala.com
                 </a>
               </div>
             </div>

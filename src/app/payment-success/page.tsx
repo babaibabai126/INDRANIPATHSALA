@@ -146,7 +146,7 @@ function PaymentSuccessContent() {
                 <a href="tel:+918293742022" className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2 text-xs font-bold text-primary-foreground">
                   <Phone className="h-3.5 w-3.5" /> 8293742022
                 </a>
-                <a href="mailto:indranipathsala2026@gmail.com" className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-2 text-xs font-semibold text-foreground hover:bg-muted/50">
+                <a href="mailto:info@indranipathsala.com" className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-2 text-xs font-semibold text-foreground hover:bg-muted/50">
                   <Mail className="h-3.5 w-3.5" /> ইমেইল করুন
                 </a>
               </div>
@@ -201,8 +201,8 @@ function PaymentSuccessContent() {
                   <a href="tel:+918293742022" className="inline-flex items-center gap-1 text-xs font-bold text-foreground">
                     <Phone className="h-3 w-3 text-emerald-500" /> 8293742022
                   </a>
-                  <a href="mailto:indranipathsala2026@gmail.com" className="inline-flex items-center gap-1 text-xs font-bold text-foreground">
-                    <Mail className="h-3 w-3 text-primary" /> indranipathsala2026@gmail.com
+                  <a href="mailto:info@indranipathsala.com" className="inline-flex items-center gap-1 text-xs font-bold text-foreground">
+                    <Mail className="h-3 w-3 text-primary" /> info@indranipathsala.com
                   </a>
                 </div>
               </div>

@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   reactStrictMode: false,
+  serverExternalPackages: ["nodemailer"],
 };
 
 export default nextConfig;

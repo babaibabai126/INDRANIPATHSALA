@@ -10,7 +10,7 @@ import nodemailer from "nodemailer";
  *
  * Body: { purchaseId: string }
  *
- * Email uses Gmail SMTP (indranipathsala2026@gmail.com).
+ * Email uses Hostinger SMTP (info@indranipathsala.com).
  * Requires GMAIL_APP_PASSWORD env var (Gmail App Password, not regular password).
  */
 
@@ -65,26 +65,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
     }
 
-    // Create email transporter using Gmail SMTP
-    const gmailUser = process.env.GMAIL_USER || "indranipathsala2026@gmail.com";
-    const gmailPass = process.env.GMAIL_APP_PASSWORD;
+    // Create email transporter using Hostinger SMTP
+    const smtpUser = process.env.HOSTINGER_EMAIL || "info@indranipathsala.com";
+    const smtpPass = process.env.HOSTINGER_PASSWORD;
 
-    if (!gmailPass) {
-      console.error("GMAIL_APP_PASSWORD env var not set — cannot send email");
+    if (!smtpPass) {
+      console.error("HOSTINGER_PASSWORD env var not set — cannot send email");
       // Still mark as PAID, just skip email
       return NextResponse.json({
         ok: true,
-        warning: "Purchase marked as PAID but email could not be sent (GMAIL_APP_PASSWORD not configured)",
+        warning: "Purchase marked as PAID but email could not be sent (HOSTINGER_PASSWORD not configured)",
         purchaseId,
         driveUrl: courseInfo.driveUrl,
       });
     }
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.hostinger.com",
+      port: 465,
+      secure: true,
       auth: {
-        user: gmailUser,
-        pass: gmailPass,
+        user: smtpUser,
+        pass: smtpPass,
       },
     });
 
@@ -145,7 +147,7 @@ export async function POST(req: NextRequest) {
         <div style="border-top:1px solid #eee;padding-top:20px;margin-top:20px;">
           <p style="color:#666;font-size:12px;margin:0;">
             যেকোনো সমস্যায় যোগাযোগ করুন:<br>
-            📞 <strong>8293742022</strong> | ✉️ <strong>indranipathsala2026@gmail.com</strong>
+            📞 <strong>8293742022</strong> | ✉️ <strong>info@indranipathsala.com</strong>
           </p>
           <p style="color:#999;font-size:11px;margin:10px 0 0;">
             © 2026 Indrani Pathsala. All rights reserved.<br>
@@ -161,7 +163,7 @@ export async function POST(req: NextRequest) {
 
     // Send email
     await transporter.sendMail({
-      from: `"Indrani Pathsala" <${gmailUser}>`,
+      from: `"Indrani Pathsala" <${smtpUser}>`,
       to: purchase.email,
       subject: `✅ Your ${courseInfo.label} Notes — Indrani Pathsala`,
       html: htmlBody,
