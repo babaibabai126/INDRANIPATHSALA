@@ -82,7 +82,7 @@ function InlineCarousel({
         {/* Prev */}
         <button
           onClick={goPrev}
-          className="absolute left-2 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/90 text-foreground backdrop-blur transition hover:bg-muted"
+          className="absolute left-1 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card/90 text-foreground backdrop-blur transition hover:bg-muted sm:left-2 sm:h-9 sm:w-9"
           aria-label="Previous page"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -95,7 +95,7 @@ function InlineCarousel({
             alt={`${title} — Page ${current + 1}`}
             fill
             sizes="(max-width: 768px) 100vw, 600px"
-            className="object-contain p-2"
+            className="object-contain p-3 sm:p-4"
             priority
           />
         </div>
@@ -103,7 +103,7 @@ function InlineCarousel({
         {/* Next */}
         <button
           onClick={goNext}
-          className="absolute right-2 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/90 text-foreground backdrop-blur transition hover:bg-muted"
+          className="absolute right-1 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card/90 text-foreground backdrop-blur transition hover:bg-muted sm:right-2 sm:h-9 sm:w-9"
           aria-label="Next page"
         >
           <ChevronRight className="h-4 w-4" />
@@ -111,7 +111,7 @@ function InlineCarousel({
       </div>
 
       {/* Thumbnails */}
-      <div className="flex gap-1.5 overflow-x-auto p-2">
+      <div className="flex gap-1.5 overflow-x-auto p-2 pb-3">
         {pages.map((page, i) => (
           <button
             key={i}
@@ -174,8 +174,9 @@ export function SampleNotes() {
           </button>
         </div>
 
-        {/* Carousels — always open (no popup, no View File button) */}
-        <div className="mx-auto mt-8 grid max-w-4xl gap-6 sm:grid-cols-2">
+        {/* Carousels — always open (no popup, no View File button)
+            Mobile: stacked vertically. Desktop: side by side */}
+        <div className="mx-auto mt-8 grid max-w-4xl gap-6 grid-cols-1 sm:grid-cols-2">
           {/* English Version */}
           <div>
             <div className="mb-2 flex items-center gap-2">
