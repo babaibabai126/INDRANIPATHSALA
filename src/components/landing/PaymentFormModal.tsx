@@ -89,12 +89,22 @@ export function PaymentFormModal({ isOpen, onClose, preselectedCourse }: Props) 
         throw new Error(j.error || "Submission failed");
       }
 
+      const data = await res.json();
+      const purchaseId = data.purchase?.id;
+
       // 2. Close the modal
       onClose();
 
       // 3. Redirect to Razorpay payment page in the SAME tab
-      // User pays there, then Razorpay returns them to the homepage
-      const razorpayUrl = selectedCourse?.razorpayUrl || "https://rzp.io/rzp/GtZpWok";
+      // After payment, Razorpay redirects back to /payment-success?purchase_id=xxx
+      const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://indranipathsala.com";
+      const returnUrl = purchaseId
+        ? `${baseUrl}/payment-success?purchase_id=${purchaseId}`
+        : `${baseUrl}/`;
+      const razorpayBase = selectedCourse?.razorpayUrl || "https://rzp.io/rzp/GtZpWok";
+      // Append return_url so Razorpay redirects back after payment
+      const separator = razorpayBase.includes("?") ? "&" : "?";
+      const razorpayUrl = `${razorpayBase}${separator}return_url=${encodeURIComponent(returnUrl)}`;
       window.location.href = razorpayUrl;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
