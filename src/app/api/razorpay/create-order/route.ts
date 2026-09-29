@@ -14,8 +14,8 @@ const COURSES: Record<string, { amount: number; label: string }> = {
   "1combo": { amount: 1499, label: "1st Year — English + Bengali (Combo)" },
   "2en": { amount: 999, label: "2nd Year — Only English" },
   "2combo": { amount: 1499, label: "2nd Year — English + Bengali (Combo)" },
-  "rc1en": { amount: 1, label: "1st Year Recorded Class Access" },
-  "rc2en": { amount: 2, label: "2nd Year Recorded Class Access" },
+  "rc1en": { amount: 149, label: "1st Year Recorded Class Access" },
+  "rc2en": { amount: 199, label: "2nd Year Recorded Class Access" },
 };
 
 export async function POST(req: NextRequest) {

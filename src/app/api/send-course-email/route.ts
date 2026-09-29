@@ -14,38 +14,45 @@ import nodemailer from "nodemailer";
  * Requires GMAIL_APP_PASSWORD env var (Gmail App Password, not regular password).
  */
 
-// Google Drive folder links for each course (NOTES ONLY — recorded class is separate)
-const COURSE_LINKS: Record<string, { folder: string; label: string; driveUrl: string }> = {
+// Course info: NOTES courses + RECORDED CLASS courses (separate products, separate emails)
+const COURSE_LINKS: Record<string, { folder: string; label: string; driveUrl: string; isRecordedClass: boolean }> = {
+  // NOTES
   "1en": {
     folder: "1st Year — Only English",
     label: "1st Year (Only English Version) ₹999",
     driveUrl: "https://drive.google.com/drive/folders/10bd7ltAYvgWereSRlbcvmpP62xg3w4tU?usp=sharing",
+    isRecordedClass: false,
   },
   "1combo": {
     folder: "1st Year — English + Bengali (Combo)",
     label: "1st Year (English + Bengali Translation (Combo)) ₹1499",
     driveUrl: "https://drive.google.com/drive/folders/1mr58yom0DYw2Fsdtiw6UOkofzFEcZGMg?usp=sharing",
+    isRecordedClass: false,
   },
   "2en": {
     folder: "2nd Year — Only English",
     label: "2nd Year (Only English Version) ₹999",
     driveUrl: "https://drive.google.com/drive/folders/16f_3fNfFToLnAES4mn8vtAAVdFFIQg4h",
+    isRecordedClass: false,
   },
   "2combo": {
     folder: "2nd Year — English + Bengali (Combo)",
     label: "2nd Year (English + Bengali Translation (Combo)) ₹1499",
     driveUrl: "https://drive.google.com/drive/folders/1FD3WD7812KOTSjjSfen53vAvSDrrKKKz?usp=sharing",
+    isRecordedClass: false,
   },
-  // Recorded Class courses (separate product — separate email)
+  // RECORDED CLASS (separate product — separate email)
   "rc1en": {
     folder: "1st Year Recorded Class",
-    label: "1st Year Recorded Class Access ₹1",
+    label: "1st Year Recorded Class Access ₹149",
     driveUrl: "https://drive.google.com/drive/folders/1Sfd5W8hnRWGR7Vc7eyylJ6axlAZNGr_O?usp=drive_link",
+    isRecordedClass: true,
   },
   "rc2en": {
     folder: "2nd Year Recorded Class",
-    label: "2nd Year Recorded Class Access ₹2",
+    label: "2nd Year Recorded Class Access ₹199",
     driveUrl: "https://drive.google.com/drive/folders/1ye8W5a0oQNq1hfhP3dBRZyCxdc4hzkS4?usp=drive_link",
+    isRecordedClass: true,
   },
 };
 
@@ -101,7 +108,19 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // HTML email body
+    // HTML email body — different for NOTES vs RECORDED CLASS
+    const isRC = courseInfo.isRecordedClass;
+    const productLabel = isRC ? "Recorded Class" : "নোটস";
+    const buttonIcon = isRC ? "🎬" : "📥";
+    const buttonText = isRC ? "Recorded Class দেখুন" : "নোটস ডাউনলোড করুন";
+    const subtitleText = isRC
+      ? "আপনার কোর্সের রেকর্ডেড ক্লাস ভিডিও নিচের লিংক থেকে দেখতে পারবেন:"
+      : "নিচের লিংক থেকে আপনার সম্পূর্ণ নোটস ডাউনলোড করুন:";
+    const descText = isRC
+      ? "উপরের বাটনে ক্লিক করলে Google Drive ফোল্ডার খুলবে যেখানে সব রেকর্ডেড ক্লাস ভিডিও আছে।"
+      : "উপরের বাটনে ক্লিক করলে Google Drive ফোল্ডার খুলবে যেখানে সব subject-এর PDF আছে। প্রতিটি ফাইল আলাদাভাবে ডাউনলোড করতে পারবেন।";
+    const headerSubtext = isRC ? "ইন্দ্রাণী পাঠশালা · Recorded Class Access" : "ইন্দ্রাণী পাঠশালা · D.Pharm Premium Notes";
+
     const htmlBody = `
 <!DOCTYPE html>
 <html>
@@ -115,7 +134,7 @@ export async function POST(req: NextRequest) {
       <!-- Header -->
       <div style="background:linear-gradient(135deg,#c8901f,#f08a3e);padding:30px;text-align:center;">
         <h1 style="color:#fff;margin:0;font-size:24px;">Indrani Pathsala</h1>
-        <p style="color:#fff;margin:5px 0 0;font-size:13px;opacity:0.9;">ইন্দ্রাণী পাঠশালা · D.Pharm Premium Notes</p>
+        <p style="color:#fff;margin:5px 0 0;font-size:13px;opacity:0.9;">${headerSubtext}</p>
       </div>
 
       <!-- Body -->
@@ -126,19 +145,18 @@ export async function POST(req: NextRequest) {
         </p>
         <p style="color:#4a4a4a;font-size:15px;line-height:1.6;">
           আপনার <strong>${courseInfo.label}</strong> কোর্সের পেমেন্ট সফলভাবে সম্পন্ন হয়েছে।
-          নিচের লিংক থেকে আপনার সম্পূর্ণ নোটস এবং রেকর্ডেড ক্লাস অ্যাক্সেস করুন:
+          ${subtitleText}
         </p>
 
-        <!-- Notes Download button -->
+        <!-- Download button -->
         <div style="text-align:center;margin:25px 0;">
           <a href="${courseInfo.driveUrl}" target="_blank" style="display:inline-block;background:#c8901f;color:#fff;text-decoration:none;padding:14px 35px;border-radius:8px;font-size:16px;font-weight:bold;">
-            📥 নোটস ডাউনলোড করুন
+            ${buttonIcon} ${buttonText}
           </a>
         </div>
 
         <p style="color:#4a4a4a;font-size:14px;line-height:1.6;">
-          উপরের বাটনে ক্লিক করলে Google Drive ফোল্ডার খুলবে যেখানে সব subject-এর PDF আছে।
-          প্রতিটি ফাইল আলাদাভাবে ডাউনলোড করতে পারবেন।
+          ${descText}
         </p>
 
         <!-- Order details -->

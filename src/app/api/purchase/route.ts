@@ -13,8 +13,8 @@ const COURSES: Record<string, { label: string; amount: number }> = {
   "1combo": { label: "1st Year — English + Bengali (Combo)", amount: 1499 },
   "2en": { label: "2nd Year — Only English", amount: 999 },
   "2combo": { label: "2nd Year — English + Bengali (Combo)", amount: 1499 },
-  "rc1en": { label: "1st Year Recorded Class Access", amount: 1 },
-  "rc2en": { label: "2nd Year Recorded Class Access", amount: 2 },
+  "rc1en": { label: "1st Year Recorded Class Access", amount: 149 },
+  "rc2en": { label: "2nd Year Recorded Class Access", amount: 199 },
 };
 
 // POST /api/purchase — user filled the form, save as PENDING.

@@ -36,8 +36,8 @@ const COURSES = [
 ];
 
 const RECORDED_CLASS_COURSES = [
-  { label: "1st Year Recorded Class — ₹1", value: "rc1en", amount: 1 },
-  { label: "2nd Year Recorded Class — ₹2", value: "rc2en", amount: 2 },
+  { label: "1st Year Recorded Class — ₹149", value: "rc1en", amount: 149 },
+  { label: "2nd Year Recorded Class — ₹199", value: "rc2en", amount: 199 },
 ];
 
 type Props = {
