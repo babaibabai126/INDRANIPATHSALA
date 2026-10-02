@@ -34,6 +34,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Purchase not found" }, { status: 404 });
     }
 
+    // If already PAID, don't create another order
+    if (purchase.status === "PAID") {
+      return NextResponse.json({ error: "This purchase is already paid" }, { status: 400 });
+    }
+
     const courseInfo = COURSES[purchase.course];
     if (!courseInfo) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });

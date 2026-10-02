@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Crown, CheckCircle2 } from "lucide-react";
+import { Crown, CheckCircle2, Video } from "lucide-react";
 import { PaymentFormModal } from "./PaymentFormModal";
 
 /**
@@ -116,6 +116,31 @@ export function Pricing() {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Recorded Class Available banner */}
+        <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-accent-purple/30 bg-accent-purple/10 p-5 text-center sm:flex-row sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple/20">
+              <Video className="h-5 w-5 text-accent-purple" />
+            </div>
+            <div className="text-left">
+              <div className="bn text-sm font-bold text-foreground">Recorded Class Available</div>
+              <div className="bn text-[11px] text-muted-foreground">
+                1st Year Recorded Class ₹149 · 2nd Year Recorded Class ₹199
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setSelectedCourse("rc1en");
+              setModalOpen(true);
+            }}
+            className="inline-flex items-center gap-1.5 rounded-full bg-accent-purple px-5 py-2 text-xs font-bold text-white transition hover:opacity-90"
+          >
+            <Video className="h-3.5 w-3.5" />
+            Recorded Class কিনুন
+          </button>
         </div>
       </div>
 

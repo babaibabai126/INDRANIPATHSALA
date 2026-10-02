@@ -131,12 +131,6 @@ export function Hero() {
                   />
                 </div>
               </div>
-              <p
-                className="bn mt-3 text-[11px] text-center"
-                style={{ color: "var(--surface-elevated-muted-foreground)" }}
-              >
-                নোটসের স্যাম্পল পেজ — সম্পূর্ণ নোটস কিনলে পাবেন
-              </p>
             </div>
           </div>
 

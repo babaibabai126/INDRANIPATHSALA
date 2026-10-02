@@ -45,14 +45,17 @@ export function FloatingButtons() {
         {/* Recorded Class — floating button (separate product) */}
         <button
           onClick={() => setRecordedModalOpen(true)}
-          aria-label="Recorded Class"
-          title="Recorded Class Access — ক্লিক করে payment form পূরণ করুন"
-          className="relative flex h-12 w-12 items-center justify-center rounded-full bg-accent-purple text-white shadow-xl shadow-purple-500/30 transition hover:scale-105 hover:opacity-90"
+          aria-label="Recorded Class Access"
+          title="Recorded Class Access — ক্লিক করে কিনুন"
+          className="relative flex flex-col items-center justify-center gap-0.5 rounded-full bg-accent-purple px-3 py-2 text-white shadow-xl shadow-purple-500/30 transition hover:scale-105 hover:opacity-90"
         >
-          <span className="absolute inset-0 rounded-full bg-accent-purple opacity-60 animate-ping" />
+          <span className="absolute inset-0 rounded-full bg-accent-purple opacity-40 animate-ping" />
           <Video className="relative h-5 w-5" />
-          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] font-bold text-accent-purple">
-            Recorded Class
+          <span className="relative text-[8px] font-bold leading-tight">
+            Recorded
+          </span>
+          <span className="relative text-[8px] font-bold leading-tight">
+            Class
           </span>
         </button>
 
