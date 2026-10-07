@@ -69,9 +69,11 @@ const PLANS: Plan[] = [
 export function Pricing() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<string>("1en");
+  const [isRecordedClass, setIsRecordedClass] = useState(false);
 
-  const openModal = (code: string) => {
+  const openModal = (code: string, rc = false) => {
     setSelectedCourse(code);
+    setIsRecordedClass(rc);
     setModalOpen(true);
   };
 
@@ -143,7 +145,7 @@ export function Pricing() {
                 <span className="bn">Email-এ লিংক পাবেন</span>
               </div>
               <button
-                onClick={() => onBuy("rc1en")}
+                onClick={() => onBuy("rc1en", true)}
                 className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent-purple px-4 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
               >
                 BUY NOW →
@@ -166,7 +168,7 @@ export function Pricing() {
                 <span className="bn">Email-এ লিংক পাবেন</span>
               </div>
               <button
-                onClick={() => onBuy("rc2en")}
+                onClick={() => onBuy("rc2en", true)}
                 className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent-purple px-4 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
               >
                 BUY NOW →
@@ -181,6 +183,7 @@ export function Pricing() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         preselectedCourse={selectedCourse}
+        isRecordedClass={isRecordedClass}
       />
     </section>
   );
@@ -242,3 +245,4 @@ function PlanCard({ plan, onBuy }: { plan: Plan; onBuy: (code: string) => void }
     </div>
   );
 }
+

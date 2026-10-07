@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Target } from "lucide-react";
+import { PaymentFormModal } from "./PaymentFormModal";
 
 /**
  * নোটস নিলে আপনার কী লাভ হবে? — 10 items i–x (verbatim from user).
@@ -21,6 +23,8 @@ const BENEFITS: { n: string; text: string }[] = [
 ];
 
 export function Benefits() {
+  const [rcModalOpen, setRcModalOpen] = useState(false);
+
   return (
     <section className="relative py-16 sm:py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
@@ -79,21 +83,32 @@ export function Benefits() {
           </a>
         </div>
 
-        {/* Recorded Class Available banner — placed after benefits, before pricing */}
-        <div className="mt-8 flex items-center justify-center gap-3 rounded-2xl border border-accent-purple/30 bg-accent-purple/10 p-4">
+        {/* Recorded Class Available banner — clickable, opens payment form */}
+        <button
+          onClick={() => setRcModalOpen(true)}
+          className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl border border-accent-purple/30 bg-accent-purple/10 p-4 text-left transition hover:bg-accent-purple/15"
+        >
           <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-accent-purple/20">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
             </svg>
           </div>
-          <div className="text-left">
+          <div className="flex-1">
             <div className="bn text-sm font-bold text-foreground">Recorded Class Available</div>
             <div className="bn text-[11px] text-muted-foreground">
-              1st Year ₹149 · 2nd Year ₹199
+              1st Year ₹149 · 2nd Year ₹199 — ক্লিক করে কিনুন
             </div>
           </div>
-        </div>
+        </button>
       </div>
+
+      {/* Recorded Class payment modal */}
+      <PaymentFormModal
+        isOpen={rcModalOpen}
+        onClose={() => setRcModalOpen(false)}
+        preselectedCourse="rc1en"
+        isRecordedClass
+      />
     </section>
   );
 }
