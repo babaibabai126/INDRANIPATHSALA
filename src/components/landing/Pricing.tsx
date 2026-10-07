@@ -118,29 +118,61 @@ export function Pricing() {
           </div>
         </div>
 
-        {/* Recorded Class Available banner */}
-        <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-accent-purple/30 bg-accent-purple/10 p-5 text-center sm:flex-row sm:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple/20">
-              <Video className="h-5 w-5 text-accent-purple" />
-            </div>
-            <div className="text-left">
-              <div className="bn text-sm font-bold text-foreground">Recorded Class Available</div>
-              <div className="bn text-[11px] text-muted-foreground">
-                1st Year Recorded Class ₹149 · 2nd Year Recorded Class ₹199
+        {/* Recorded Class section — separate Buy Now cards */}
+        <div className="mt-10">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-purple/15 px-4 py-2 text-sm font-extrabold uppercase tracking-wide text-accent-purple">
+              <Video className="h-4 w-4" />
+              Recorded Class Available
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {/* 1st Year Recorded Class */}
+            <div className="relative flex flex-col overflow-hidden rounded-2xl border border-accent-purple/30 bg-card p-5 transition hover:-translate-y-1 hover:border-accent-purple/50">
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full bg-accent-purple/25 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-purple">
+                1st Year · Recorded Class
               </div>
+              <h3 className="mt-3 text-base font-bold text-foreground">1st Year Recorded Class Access</h3>
+              <p className="bn text-[11px] text-muted-foreground">সম্পূর্ণ 1st Year রেকর্ডেড ক্লাস ভিডিও</p>
+              <div className="mt-4 flex items-baseline gap-1.5">
+                <span className="text-2xl font-extrabold text-foreground">₹149</span>
+                <span className="text-[10px] text-muted-foreground">/-</span>
+              </div>
+              <div className="mt-1 flex items-center gap-1.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 className="h-3 w-3" />
+                <span className="bn">Email-এ লিংক পাবেন</span>
+              </div>
+              <button
+                onClick={() => onBuy("rc1en")}
+                className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent-purple px-4 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
+              >
+                BUY NOW →
+              </button>
+            </div>
+
+            {/* 2nd Year Recorded Class */}
+            <div className="relative flex flex-col overflow-hidden rounded-2xl border border-accent-purple/30 bg-card p-5 transition hover:-translate-y-1 hover:border-accent-purple/50">
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full bg-accent-purple/25 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-accent-purple">
+                2nd Year · Recorded Class
+              </div>
+              <h3 className="mt-3 text-base font-bold text-foreground">2nd Year Recorded Class Access</h3>
+              <p className="bn text-[11px] text-muted-foreground">সম্পূর্ণ 2nd Year রেকর্ডেড ক্লাস ভিডিও</p>
+              <div className="mt-4 flex items-baseline gap-1.5">
+                <span className="text-2xl font-extrabold text-foreground">₹199</span>
+                <span className="text-[10px] text-muted-foreground">/-</span>
+              </div>
+              <div className="mt-1 flex items-center gap-1.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 className="h-3 w-3" />
+                <span className="bn">Email-এ লিংক পাবেন</span>
+              </div>
+              <button
+                onClick={() => onBuy("rc2en")}
+                className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent-purple px-4 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
+              >
+                BUY NOW →
+              </button>
             </div>
           </div>
-          <button
-            onClick={() => {
-              setSelectedCourse("rc1en");
-              setModalOpen(true);
-            }}
-            className="inline-flex items-center gap-1.5 rounded-full bg-accent-purple px-5 py-2 text-xs font-bold text-white transition hover:opacity-90"
-          >
-            <Video className="h-3.5 w-3.5" />
-            Recorded Class কিনুন
-          </button>
         </div>
       </div>
 
