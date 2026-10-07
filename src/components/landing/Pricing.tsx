@@ -1,13 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Crown, CheckCircle2, Video } from "lucide-react";
-import { PaymentFormModal } from "./PaymentFormModal";
 
 /**
  * BUY NOW — Pricing section.
- * No features list, no Drive links. Just badge + title + price + BUY NOW button.
- * BUY NOW click → opens PaymentFormModal popup.
+ * Uses onBuy prop from parent (single shared PaymentFormModal).
  */
 
 type Plan = {
@@ -66,15 +63,13 @@ const PLANS: Plan[] = [
   },
 ];
 
-export function Pricing() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<string>("1en");
-  const [isRecordedClass, setIsRecordedClass] = useState(false);
+type Props = {
+  onBuy?: (code: string, rc?: boolean) => void;
+};
 
-  const openModal = (code: string, rc = false) => {
-    setSelectedCourse(code);
-    setIsRecordedClass(rc);
-    setModalOpen(true);
+export function Pricing({ onBuy }: Props) {
+  const handleBuy = (code: string, rc = false) => {
+    onBuy?.(code, rc);
   };
 
   return (
@@ -100,7 +95,7 @@ export function Pricing() {
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {PLANS.filter((p) => p.year === "1st Year").map((plan, i) => (
-                <PlanCard key={i} plan={plan} onBuy={openModal} />
+                <PlanCard key={i} plan={plan} onBuy={handleBuy} />
               ))}
             </div>
           </div>
@@ -114,7 +109,7 @@ export function Pricing() {
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {PLANS.filter((p) => p.year === "2nd Year").map((plan, i) => (
-                <PlanCard key={i} plan={plan} onBuy={openModal} />
+                <PlanCard key={i} plan={plan} onBuy={handleBuy} />
               ))}
             </div>
           </div>
@@ -145,7 +140,7 @@ export function Pricing() {
                 <span className="bn">Email-এ লিংক পাবেন</span>
               </div>
               <button
-                onClick={() => onBuy("rc1en", true)}
+                onClick={() => handleBuy("rc1en", true)}
                 className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent-purple px-4 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
               >
                 BUY NOW →
@@ -168,7 +163,7 @@ export function Pricing() {
                 <span className="bn">Email-এ লিংক পাবেন</span>
               </div>
               <button
-                onClick={() => onBuy("rc2en", true)}
+                onClick={() => handleBuy("rc2en", true)}
                 className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent-purple px-4 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
               >
                 BUY NOW →
@@ -177,19 +172,11 @@ export function Pricing() {
           </div>
         </div>
       </div>
-
-      {/* Payment form modal */}
-      <PaymentFormModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        preselectedCourse={selectedCourse}
-        isRecordedClass={isRecordedClass}
-      />
     </section>
   );
 }
 
-function PlanCard({ plan, onBuy }: { plan: Plan; onBuy: (code: string) => void }) {
+function PlanCard({ plan, onBuy }: { plan: Plan; onBuy: (code: string, rc?: boolean) => void }) {
   return (
     <div
       className={`relative flex flex-col overflow-hidden rounded-2xl border bg-card p-5 transition hover:-translate-y-1 ${
@@ -245,4 +232,3 @@ function PlanCard({ plan, onBuy }: { plan: Plan; onBuy: (code: string) => void }
     </div>
   );
 }
-

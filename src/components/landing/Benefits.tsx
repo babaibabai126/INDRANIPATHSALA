@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { Target } from "lucide-react";
-import { PaymentFormModal } from "./PaymentFormModal";
 
 /**
  * নোটস নিলে আপনার কী লাভ হবে? — 10 items i–x (verbatim from user).
  * PDF used only for placement.
+ * Benefits section also has "Recorded Class Available" banner (clickable → opens payment form)
  */
 
 const BENEFITS: { n: string; text: string }[] = [
@@ -22,9 +21,11 @@ const BENEFITS: { n: string; text: string }[] = [
   { n: "x",   text: "পরীক্ষার নম্বর ও লেখার মান উন্নত হবে।" },
 ];
 
-export function Benefits() {
-  const [rcModalOpen, setRcModalOpen] = useState(false);
+type Props = {
+  onBuy?: (code: string, rc?: boolean) => void;
+};
 
+export function Benefits({ onBuy }: Props) {
   return (
     <section className="relative py-16 sm:py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
@@ -69,7 +70,7 @@ export function Benefits() {
         <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <a
             href="#pricing"
-            className="glow-amber inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition hover:opacity-90"
           >
             <span className="bn">এখনই কিনুন</span> →
           </a>
@@ -84,31 +85,25 @@ export function Benefits() {
         </div>
 
         {/* Recorded Class Available banner — clickable, opens payment form */}
-        <button
-          onClick={() => setRcModalOpen(true)}
-          className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl border border-accent-purple/30 bg-accent-purple/10 p-4 text-left transition hover:bg-accent-purple/15"
-        >
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-accent-purple/20">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <div className="flex-1">
-            <div className="bn text-sm font-bold text-foreground">Recorded Class Available</div>
-            <div className="bn text-[11px] text-muted-foreground">
-              1st Year ₹149 · 2nd Year ₹199 — ক্লিক করে কিনুন
+        {onBuy && (
+          <button
+            onClick={() => onBuy("rc1en", true)}
+            className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl border border-accent-purple/30 bg-accent-purple/10 p-4 text-left transition hover:bg-accent-purple/15"
+          >
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-accent-purple/20">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
             </div>
-          </div>
-        </button>
+            <div className="flex-1">
+              <div className="bn text-sm font-bold text-foreground">Recorded Class Available</div>
+              <div className="bn text-[11px] text-muted-foreground">
+                1st Year ₹149 · 2nd Year ₹199 — ক্লিক করে কিনুন
+              </div>
+            </div>
+          </button>
+        )}
       </div>
-
-      {/* Recorded Class payment modal */}
-      <PaymentFormModal
-        isOpen={rcModalOpen}
-        onClose={() => setRcModalOpen(false)}
-        preselectedCourse="rc1en"
-        isRecordedClass
-      />
     </section>
   );
 }
