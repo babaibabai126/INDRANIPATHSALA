@@ -22,6 +22,7 @@ import {
   Clock,
   CheckCircle2,
   LogOut,
+  ShieldAlert,
 } from "lucide-react";
 
 type Purchase = {
@@ -45,6 +46,8 @@ type Stats = {
   pendingCount?: number;
   byCourse: Record<string, { count: number; revenue: number; label: string }>;
   last7Days: { date: string; sales: number; count: number }[];
+  dbError?: boolean;
+  message?: string;
 };
 
 const COURSE_FILTERS: { value: string; label: string }[] = [
@@ -70,6 +73,7 @@ export default function AdminPage() {
   const [authChecking, setAuthChecking] = useState(true);
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
+  const [dbError, setDbError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [course, setCourse] = useState("");
@@ -106,16 +110,35 @@ export default function AdminPage() {
       const params = new URLSearchParams();
       if (course) params.set("course", course);
       if (q) params.set("q", q);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
       const [pRes, sRes] = await Promise.all([
-        fetch(`/api/purchases?${params.toString()}`, { cache: "no-store" }),
-        fetch("/api/stats", { cache: "no-store" }),
+        fetch(`/api/purchases?${params.toString()}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        }),
+        fetch("/api/stats", { cache: "no-store", signal: controller.signal }),
       ]);
+      clearTimeout(timeoutId);
       const pData = await pRes.json();
       const sData = await sRes.json();
       setPurchases(pData.purchases || []);
       setStats(sData);
+      // Show DB error banner if either endpoint reports dbError
+      if (pData.dbError || sData.dbError) {
+        setDbError(
+          sData.message ||
+            pData.message ||
+            "Database unreachable. Set DATABASE_URL (Supabase Postgres connection string) in Vercel project settings → Environment Variables."
+        );
+      } else {
+        setDbError(null);
+      }
     } catch (e) {
       console.error(e);
+      setDbError(
+        "Could not load data from server. Network timeout or backend unavailable. Try Refresh."
+      );
     } finally {
       setLoading(false);
     }
@@ -223,6 +246,38 @@ export default function AdminPage() {
             কারা কারা payment সম্পূর্ণ করে course পেল এবং মোট কত টাকার sale হলো — এখানে দেখুন।
           </p>
         </div>
+
+        {/* DB connection error banner — shown when /api/purchases or /api/stats
+            report dbError, or when fetch fails entirely. Lets the user know the
+            panel IS open but the database needs to be configured on Vercel. */}
+        {dbError && (
+          <div className="mb-6 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm">
+            <div className="flex items-start gap-3">
+              <ShieldAlert className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-500" />
+              <div className="flex-1">
+                <div className="font-bold text-amber-700 dark:text-amber-400">
+                  Database connection failed — Admin panel is open but no data could be loaded.
+                </div>
+                <div className="bn mt-1 text-xs text-amber-700/80 dark:text-amber-400/80">
+                  অ্যাডমিন প্যানেল খোলা আছে, কিন্তু ডেটাবেস থেকে কোনো data লোড করা যাচ্ছে না।
+                </div>
+                <div className="mt-2 text-[12px] text-amber-700 dark:text-amber-400">
+                  {dbError}
+                </div>
+                <div className="mt-2 text-[11px] text-muted-foreground">
+                  <span className="bn">সমাধান:</span> Vercel project → Settings → Environment Variables → এ <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">DATABASE_URL</code> নামে আপনার Supabase Postgres connection string টি বসান, তারপর Vercel-এ আবার deploy করুন।
+                </div>
+                <button
+                  onClick={refresh}
+                  className="bn mt-3 inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-amber-700"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+                  আবার চেষ্টা করুন
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Stats cards */}
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
@@ -380,13 +435,30 @@ export default function AdminPage() {
                     <td colSpan={8} className="px-4 py-12 text-center text-muted-foreground">
                       <RefreshCw className="mx-auto mb-3 h-5 w-5 animate-spin" />
                       Loading purchases...
+                      <div className="bn mt-1 text-[10px]">
+                        যদি ১০ সেকেন্ডের বেশি সময় নেয়, database connection-এ সমস্যা আছে — banner-এ দেখুন।
+                      </div>
                     </td>
                   </tr>
                 )}
-                {!loading && purchases.length === 0 && (
+                {!loading && purchases.length === 0 && !dbError && (
                   <tr>
                     <td colSpan={8} className="px-4 py-12 text-center text-muted-foreground">
-                      No purchases found. Try adjusting filters.
+                      <div className="bn text-sm">এখনও কোনো purchase নেই।</div>
+                      <div className="text-[11px] mt-1">
+                        No purchases found. When students buy, they'll appear here.
+                      </div>
+                    </td>
+                  </tr>
+                )}
+                {!loading && purchases.length === 0 && dbError && (
+                  <tr>
+                    <td colSpan={8} className="px-4 py-12 text-center text-muted-foreground">
+                      <ShieldAlert className="mx-auto mb-3 h-6 w-6 text-amber-500" />
+                      <div className="bn text-sm">Database unreachable — no purchases loaded.</div>
+                      <div className="text-[11px] mt-1">
+                        See the yellow banner above to fix DATABASE_URL.
+                      </div>
                     </td>
                   </tr>
                 )}

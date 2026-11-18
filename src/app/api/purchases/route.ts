@@ -3,6 +3,8 @@ import { getDb } from "@/lib/db";
 
 // GET /api/purchases — list purchases (newest first)
 // Query params: ?limit=100&course=1en&status=PAID&q=search
+// Returns { purchases, count, dbError? } — dbError=true if DB is unreachable,
+// so the admin dashboard can show a helpful message instead of infinite loading.
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -33,7 +35,16 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ purchases, count: purchases.length });
   } catch (e) {
     console.error("purchases error", e);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    // Return HTTP 200 with empty data + dbError flag so the admin dashboard
+    // can render an empty state with a clear error banner (instead of infinite
+    // "Loading purchases..." spin). The user sees the panel IS open.
+    return NextResponse.json({
+      purchases: [],
+      count: 0,
+      dbError: true,
+      message:
+        "Database unreachable. Set DATABASE_URL (Supabase Postgres connection string) in Vercel project settings → Environment Variables.",
+    });
   }
 }
 

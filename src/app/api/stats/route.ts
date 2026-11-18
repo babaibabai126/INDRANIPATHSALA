@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 
 // GET /api/stats — total sales, student counts by course, etc.
+// Returns empty stats with dbError=true when DB is unreachable, so the admin
+// dashboard renders zeros with a clear banner instead of infinite loading.
 export async function GET() {
   try {
     const db = await getDb();
@@ -67,6 +69,31 @@ export async function GET() {
     });
   } catch (e) {
     console.error("stats error", e);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    // Empty stats + dbError flag so the admin dashboard renders zeros with
+    // a clear "DB unreachable" banner instead of infinite loading.
+    const last7Days: { date: string; sales: number; count: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() - i);
+      last7Days.push({ date: d.toISOString().slice(0, 10), sales: 0, count: 0 });
+    }
+    return NextResponse.json({
+      totalSales: 0,
+      totalStudents: 0,
+      todaySales: 0,
+      todayStudents: 0,
+      pendingCount: 0,
+      byCourse: {
+        "1en": { count: 0, revenue: 0, label: "1st Year — Only English" },
+        "1combo": { count: 0, revenue: 0, label: "1st Year — Combo" },
+        "2en": { count: 0, revenue: 0, label: "2nd Year — Only English" },
+        "2combo": { count: 0, revenue: 0, label: "2nd Year — Combo" },
+      },
+      last7Days,
+      dbError: true,
+      message:
+        "Database unreachable. Set DATABASE_URL (Supabase Postgres connection string) in Vercel project settings → Environment Variables.",
+    });
   }
 }
